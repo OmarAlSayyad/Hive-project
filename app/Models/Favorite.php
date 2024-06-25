@@ -10,7 +10,7 @@ class Favorite extends Model
     use HasFactory;
 
     protected $fillable = [
-        'company_id', 'seeker_id'
+        'company_id', 'seeker_id','job_post_id','freelance_post_id'
     ];
 
     public function company()
@@ -22,4 +22,14 @@ class Favorite extends Model
     {
         return $this->belongsTo(Seeker::class);
     }
+    public function job_post()
+    {
+        return $this->belongsTo(Job_Post::class);
+    }
+    public function freelance_post()
+    {
+        return $this->belongsTo(Freelance_Post::class);
+    }
+
+
 }

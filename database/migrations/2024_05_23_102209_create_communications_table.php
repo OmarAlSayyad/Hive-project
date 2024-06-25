@@ -13,13 +13,12 @@ return new class extends Migration
     {
         Schema::create('communications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
-
             $table->string('mobile_phone')->nullable();
             $table->string('line_phone')->nullable();
             $table->string('website')->nullable();
             $table->string('linkedin_account')->nullable();
             $table->string('github_account')->nullable();
+            $table->string('facebook_account')->nullable();
             $table->timestamps();
         });
     }

@@ -13,13 +13,22 @@ return new class extends Migration
     {
         Schema::create('freelance_posts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('skill_id')->constrained('skills');
-            $table->foreignId('location_id')->constrained('locations');
+            $table->foreignId('company_id')->nullable()->constrained('companies');
+            $table->foreignId('seeker_id')->nullable()->constrained('seekers');
+            $table->foreignId('category_id')->constrained('categories');
 
-            $table->string('name');
-            $table->decimal('hourly_rate', 10, 2);
+            $table->string('title');
+            $table->text('description');
+            $table->dateTime('delivery_date');
+            $table->decimal('min_budget', 10, 2);
+            $table->decimal('max_budget', 10, 2);
+            $table->enum('post_status',['open','close'])->default('open');
             $table->timestamps();
+
+            $table->index('company_id');
+            $table->index('seeker_id');
+            $table->index('category_id');
+
         });
     }
 

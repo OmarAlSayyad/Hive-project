@@ -22,7 +22,9 @@ class UpdateLocationsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'city' => 'required|min:2|max:50|alpha',
+            'country' => 'required|min:2|max:50|alpha',
+            'address' => 'required|min:2|max:255|alpha',
         ];
     }
 }

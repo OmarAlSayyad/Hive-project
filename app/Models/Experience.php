@@ -10,7 +10,7 @@ class Experience extends Model
     use HasFactory;
 
     protected $fillable = [
-        'contract_id', 'seeker_id', 'title', 'description', 'start_date', 'end_date'
+         'seeker_id', 'job_title', 'company_name', 'job_description', 'start_date','end_date'
     ];
 
 

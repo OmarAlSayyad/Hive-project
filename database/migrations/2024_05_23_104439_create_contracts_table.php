@@ -13,14 +13,22 @@ return new class extends Migration
     {
         Schema::create('contracts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('hire_id')->constrained('companies');
+            $table->foreignId('company_hire_id')->nullable()->constrained('companies');
+            $table->foreignId('seeker_hire_id')->nullable()->constrained('seekers');
+
             $table->foreignId('freelancer_id')->constrained('seekers');
             $table->foreignId('freelance_id')->constrained('freelance_posts');
+
             $table->text('terms');
-            $table->date('start_date')->nullable();
-            $table->date('end_date')->nullable();
-            $table->string('status');
+            $table->dateTime('start_date');
+            $table->dateTime('end_date');
+            $table->boolean('status')->default(false);
             $table->timestamps();
+
+            $table->index('company_hire_id');
+            $table->index('seeker_hire_id');
+            $table->index('freelancer_id');
+            $table->index('freelance_id');
         });
     }
 

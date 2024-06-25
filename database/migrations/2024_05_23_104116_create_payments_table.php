@@ -13,12 +13,19 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('payer_id')->constrained('companies');
+            $table->foreignId('company_payer_id')->nullable()->constrained('companies');
+            $table->foreignId('seeker_payer_id')->nullable()->constrained('seekers');
             $table->foreignId('payee_id')->constrained('seekers');
             $table->foreignId('freelance_id')->constrained('freelance_posts');
+
             $table->decimal('amount', 10, 2);
-            $table->string('status');
+            $table->string('status')->default('Retractable');
             $table->timestamps();
+
+            $table->index('company_payer_id');
+            $table->index('seeker_payer_id');
+            $table->index('payee_id');
+            $table->index('freelance_id');
         });
     }
 

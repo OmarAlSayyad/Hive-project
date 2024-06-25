@@ -14,12 +14,16 @@ return new class extends Migration
         Schema::create('experiences', function (Blueprint $table) {
             $table->id();
             $table->foreignId('seeker_id')->constrained('seekers');
-            $table->string('job_title');
-            $table->string('company_name');
+
+            $table->string('job_title')->nullable();
+            $table->string('company_name')->nullable();
             $table->text('job_description')->nullable();
-            $table->date('start_date');
+            $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->timestamps();
+
+            $table->index('seeker_id');
+
         });
     }
 

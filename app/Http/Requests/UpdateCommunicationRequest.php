@@ -22,7 +22,13 @@ class UpdateCommunicationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
-        ];
+            'mobile_phone' => 'required|string|max:255',
+            'line_phone' => 'required|string|max:255',
+            'website' => 'required|url',
+            'linkedin_account' => 'nullable|url',
+            'github_account' => 'nullable|url',
+            'facebook_account' => 'nullable|url'
+             ];
+
     }
 }

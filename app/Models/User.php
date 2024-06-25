@@ -5,15 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
-
-
-    const ADMIN_ROLE = 1;
-    const COMPANY_ROLE = 2;
-    const MEMBER_ROLE = 3;
+    use HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -24,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role'
     ];
 
     /**
@@ -48,4 +46,23 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+
+    public function seeker()
+    {
+        return $this->hasOne(Seeker::class);
+    }
+
+    public function company()
+    {
+        return $this->hasOne(Company::class);
+    }
+
+    public function seeker_language()
+    {
+        return $this->hasMany(Seeker_Language::class);
+    }
+
+
+
 }

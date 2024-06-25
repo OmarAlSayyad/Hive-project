@@ -18,15 +18,21 @@ return new class extends Migration
             $table->foreignId('communication_id')->constrained('communications');
             $table->foreignId('location_id')->constrained('locations');
 
-            $table->decimal('rating', 3, 2)->nullable();
+            $table->enum('rating',[1,2,3,4,5])->default(null);
             $table->string('cv')->nullable();
-            $table->string('level')->nullable();
+            $table->enum('level',['Beginner','Middle','Advanced','Expert'])->default('Beginner');
+            $table->decimal('on_time_percentage', 5, 2)->nullable();
             $table->text('bio')->nullable();
-            $table->string('gender')->nullable();
+            $table->enum('gender',['Male','Female','Not_determined'])->default('Not_determined');
             $table->string('picture')->nullable();
             $table->decimal('hourly_rate', 10, 2)->nullable();
-            $table->date('birth_date');
+            $table->date('birth_date')->nullable();
             $table->timestamps();
+
+            $table->index('user_id');
+            $table->index('communication_id');
+            $table->index('location_id');
+
         });
     }
 

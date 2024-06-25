@@ -8,12 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 class Communication extends Model
 {
     use HasFactory;
+
+
     protected $fillable = [
-        'user_id', 'mobile_phone', 'line_phone', 'website', 'linkedin_account', 'github_account'
+         'mobile_phone', 'line_phone', 'website', 'linkedin_account', 'github_account','facebook_account'
     ];
 
-    public function user()
+
+    public function company()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasOne(Company::class);
+    }
+    public function seeker()
+    {
+        return $this->hasOne(Seeker::class);
     }
 }

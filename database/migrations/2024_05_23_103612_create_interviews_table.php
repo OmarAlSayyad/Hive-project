@@ -16,13 +16,18 @@ return new class extends Migration
             $table->foreignId('company_id')->constrained('companies');
             $table->foreignId('seeker_id')->constrained('seekers');
 
-            $table->dateTime('scheduled_at');
-            $table->dateTime('started_at')->nullable();
-            $table->dateTime('ended_at')->nullable();
-            $table->string('location')->nullable();
-            $table->text('notes')->nullable();
-            $table->string('status')->default('scheduled');
+            $table->date('scheduled_at');
+            $table->time('started_at');
+            $table->time('ended_at');
+            $table->string('address');
+            $table->text('notes');
+            $table->boolean('status')->default(false);
+            $table->enum('result',['Accepted','Refused','Undefined'])->default('Undefined');
             $table->timestamps();
+
+            $table->index('company_id');
+            $table->index('seeker_id');
+
         });
     }
 

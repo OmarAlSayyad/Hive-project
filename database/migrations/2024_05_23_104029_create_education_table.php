@@ -14,15 +14,17 @@ return new class extends Migration
         Schema::create('education', function (Blueprint $table) {
             $table->id();
             $table->foreignId('seeker_id')->constrained('seekers');
-            $table->string('certificate');
-            $table->string('field_of_study');
-            $table->string('institution_name');
-            $table->date('graduation_date');
-            $table->string('degree');
+
+            $table->string('certificate')->nullable();
+            $table->string('field_of_study')->nullable();
+            $table->string('institution_name')->nullable();
+            $table->date('graduation_date')->nullable();
             $table->string('specialization')->nullable();
             $table->enum('status', ['enrolled', 'graduated', 'dropped_out'])->default('enrolled');
             $table->enum('study_mode', ['full_time', 'part_time', 'online'])->default('full_time');
             $table->timestamps();
+
+            $table->index('seeker_id');
         });
     }
 

@@ -11,31 +11,46 @@ class Freelance_Post extends Model
 
 
     protected $fillable = [
-        'user_id', 'skill_id', 'location_id', 'name', 'hourly_rate'
+        'company_id','seeker_id','category_id','title', 'description', 'delivery_date', 'min_budget','max_budget','post_status'
     ];
 
-    public function user()
+    public function company()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Company::class);
+    }
+    public function seeker()
+    {
+        return $this->belongsTo(Seeker::class);
     }
 
     public function skill()
     {
-        return $this->belongsTo(Skill::class);
+        return $this->belongsToMany(Skill::class, 'required_skills');
     }
 
-    public function location()
+    public function language()
     {
-        return $this->belongsTo(Location::class);
+        return $this->belongsToMany(Language::class,'required_languages');
     }
 
-    public function payments()
+    public function payment()
     {
-        return $this->hasMany(Payment::class);
+        return $this->hasOne(Payment::class);
+    }
+    public function transaction()
+    {
+        return $this->hasOne(Transaction::class);
     }
 
-    public function contracts()
+    public function contract()
     {
         return $this->hasMany(Contract::class);
+    }
+
+
+
+    public function favorite()
+    {
+        return $this->hasMany(Favorite::class);
     }
 }

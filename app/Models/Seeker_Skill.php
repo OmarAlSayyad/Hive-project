@@ -13,13 +13,5 @@ class Seeker_Skill extends Model
         'seeker_id', 'skill_id'
     ];
 
-    public function seeker()
-    {
-        return $this->belongsTo(Seeker::class);
-    }
 
-    public function skill()
-    {
-        return $this->belongsTo(Skill::class);
-    }
 }

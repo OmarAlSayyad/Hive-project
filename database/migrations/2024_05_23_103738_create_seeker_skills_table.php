@@ -16,6 +16,10 @@ return new class extends Migration
             $table->foreignId('seeker_id')->constrained('seekers');
             $table->foreignId('skill_id')->constrained('skills');
             $table->timestamps();
+
+            $table->index('seeker_id');
+            $table->index('skill_id');
+
         });
     }
 

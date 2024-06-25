@@ -13,13 +13,23 @@ return new class extends Migration
     {
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
+
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('location_id')->constrained('locations');
-            $table->foreignId('communications_id')->constrained('communications');
+            $table->foreignId('communication_id')->constrained('communications');
+
+            $table->enum('rating',[1,2,3,4,5])->default(null);
             $table->string('picture')->nullable();
-            $table->string('industry');
-            $table->text('description');
+            $table->string('industry')->nullable();
+            $table->text('description')->nullable();
+            $table->boolean('approved')->default(false);
+
             $table->timestamps();
+
+            $table->index('user_id');
+            $table->index('location_id');
+            $table->index('communication_id');
+
         });
     }
 

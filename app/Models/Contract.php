@@ -11,7 +11,7 @@ class Contract extends Model
 
 
     protected $fillable = [
-        'title', 'description', 'start_date', 'end_date', 'value'
+        'company_hire_id','seeker_hire_id','freelancer_id','freelance_id','terms', 'description', 'start_date', 'end_date', 'status'
     ];
 
     public function company()
@@ -24,10 +24,6 @@ class Contract extends Model
         return $this->belongsTo(Seeker::class);
     }
 
-    public function favorites()
-    {
-        return $this->hasMany(Favorite::class);
-    }
 
     public function scopeActive($query)
     {

@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Communication;
 use App\Http\Requests\StoreCommunicationRequest;
 use App\Http\Requests\UpdateCommunicationRequest;
+use App\Models\User;
+use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Log;
 
 class CommunicationController extends Controller
 {
@@ -51,9 +55,38 @@ class CommunicationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateCommunicationRequest $request, Communication $communication)
+    public function update(UpdateCommunicationRequest $request,$userId)
     {
-        //
+        try {
+            $validated = $request->validated();
+            if (!$validated) {
+                return response()->json([
+                    'data' => '',
+                    'message' => $request->errors()->all(),
+                    'status' => 422
+                ]);
+            }
+
+            $location = Location::create([
+                'user_id' => $userId,
+                'country' => $request->country,
+                'city' => $request->city,
+                'address' => $request->address,
+            ]);
+
+            return response()->json([
+                'data' => $location,
+                'message' => 'Locations created successfully',
+                'status' => 201
+            ]);
+        } catch (Exception $e) {
+            Log::error('Error creating location: ' . $e->getMessage());
+            return response()->json([
+                'data' => '',
+                'message' => 'An error occurred while creating the location',
+                'status' => 500
+            ]);
+        }
     }
 
     /**

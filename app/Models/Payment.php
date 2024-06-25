@@ -10,22 +10,22 @@ class Payment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'payer_id', 'payee_id', 'freelance_id', 'amount', 'status'
+        'company_payer_id','seeker_payer_id', 'payee_id', 'freelance_id', 'amount', 'status'
     ];
 
-    public function payer()
+    public function company()
     {
-        return $this->belongsTo(Company::class, 'payer_id');
+        return $this->belongsTo(Company::class, 'company_payer_id');
+    }
+    public function seeker()
+    {
+        return $this->belongsTo(Seeker::class);
     }
 
-    public function payee()
-    {
-        return $this->belongsTo(Seeker::class, 'payee_id');
-    }
 
-    public function freelancePost()
+    public function freelance_post()
     {
-        return $this->belongsTo(FreelancePost::class, 'freelance_id');
+        return $this->belongsTo(Freelance_Post::class);
     }
 
 

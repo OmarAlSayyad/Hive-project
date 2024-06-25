@@ -18,18 +18,19 @@ class Skill extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function seekers()
+    public function seeker_skill()
     {
         return $this->belongsToMany(Seeker::class, 'seeker_skills');
     }
 
-    public function jobPosts()
+    public function job_post()
     {
-        return $this->hasMany(JobPost::class);
+        return $this->belongsToMany(Job_Post::class, 'required_skills');
     }
 
-    public function freelancePosts()
+    public function freelance_post()
     {
-        return $this->hasMany(FreelancePost::class);
+        return $this->belongsToMany(Freelance_Post::class, 'required_skills');
     }
+
 }

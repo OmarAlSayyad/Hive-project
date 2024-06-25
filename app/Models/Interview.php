@@ -10,7 +10,7 @@ class Interview extends Model
     use HasFactory;
 
     protected $fillable = [
-        'company_id', 'seeker_id', 'scheduled_at', 'started_at', 'ended_at', 'location', 'notes', 'status'
+        'company_id', 'seeker_id', 'scheduled_at', 'started_at', 'ended_at', 'address', 'notes', 'status','result'
     ];
 
     public function company()

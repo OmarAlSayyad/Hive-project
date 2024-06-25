@@ -9,16 +9,23 @@ class Transaction extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'user_id', 'receiver_id', 'type', 'amount', 'status', 'payment_method', 'transaction_id', 'description', 'meta'
+        'company_id','seeker_id', 'receiver_id','freelance_id', 'coin_type', 'amount', 'status', 'payment_method',  'description'
     ];
 
-    public function user()
+    public function company()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Company::class);
     }
-
+    public function seeker()
+    {
+        return $this->belongsTo(Seeker::class);
+    }
+    public function freelance_post()
+    {
+        return $this->belongsTo(Freelance_Post::class);
+    }
     public function receiver()
     {
-        return $this->belongsTo(User::class, 'receiver_id');
+        return $this->belongsTo(Seeker::class, 'receiver_id');
     }
 }

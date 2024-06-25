@@ -13,10 +13,14 @@ return new class extends Migration
     {
         Schema::create('wallets', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('company_id')->nullable()->constrained('companies');
+            $table->foreignId('seeker_id')->nullable()->constrained('seekers');
             $table->decimal('balance', 10, 2);
+            $table->enum('type',['Total','Retractable']);
             $table->timestamps();
 
+            $table->index('company_id');
+            $table->index('seeker_id');
         });
     }
 
