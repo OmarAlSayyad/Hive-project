@@ -16,7 +16,7 @@ class UserController extends Controller
 
 
     public function register(StoreUserRequest $request)
-    {
+    {//    $user = Auth::user();
         $validate=$request->validated();
         if(!$validate)
         {
