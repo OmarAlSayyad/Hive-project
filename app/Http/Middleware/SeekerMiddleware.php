@@ -17,13 +17,13 @@ class SeekerMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {   $user=Auth::user();
-          //  if ($request->input('token') !==  $user->remember_token) {
-          //      return response()->json([
-          //          'data' => '',
-          //          'message' => 'not authenticate ( token is not valid )',
-          //          'status' => 500
-          //      ]);
-          //  }
+            if ($request->input('token') !==  $user->remember_token) {
+                return response()->json([
+                    'data' => '',
+                    'message' => 'not authenticate ( token is not valid )',
+                    'status' => 500
+                ]);
+            }
 
         if($user->role==='seeker')
         {
