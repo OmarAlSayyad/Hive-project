@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class StoreFreelance_PostRequest extends FormRequest
 {
@@ -11,7 +13,7 @@ class StoreFreelance_PostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +24,26 @@ class StoreFreelance_PostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'seeker_id'=>'nullable|exists:seekers,id',
+            'company_id'=>'nullable|exists:companies,id',
+            'category_id'=>'required|exists:categories,id',
+            'title'=>'required|string',
+            'description'=>'required|string',
+            'delivery_date'=>'required|date',
+            'min_budget'=>'required',
+            'max_budget'=>'required',
+
+
+
         ];
+    }
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = $validator->errors();
+        $response = response()->json([
+            'message' => 'Invalid data send',
+            'details' => $errors->messages(),
+        ], 422);
+        throw new HttpResponseException($response);
     }
 }

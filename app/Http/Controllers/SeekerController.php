@@ -11,7 +11,9 @@ use App\Http\Requests\UpdateSeekerRequest;
 use App\Models\User;
 use App\Models\Wallet;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -40,6 +42,7 @@ class SeekerController extends Controller
      */
     public function store(StoreSeekerRequest $request)
     {
+        $user = Auth::user();
         try {
             $validated = $request->validated();
             if (!$validated) {
@@ -49,12 +52,13 @@ class SeekerController extends Controller
                     'status' => 422,
                 ]);
             }
-            if (!$user = User::findOrFail($request->user_id))
+            $existingSeeker = Seeker::where('user_id', $user->id)->first();
+            if ($existingSeeker )
             {
                 return response()->json([
                     'data' => '',
-                    'message' => 'User not found with the provided user_id',
-                    'status' => 404,
+                    'message' => 'User already exist',
+                    'status' => 500,
                 ]);
             }
             try
@@ -108,7 +112,6 @@ class SeekerController extends Controller
                 $cvName = null;
             }
 
-
             try {
                 $seeker = Seeker::create([
                     'user_id' => $user->id,
@@ -128,8 +131,8 @@ class SeekerController extends Controller
                 return response()->json([
                     'data' => '',
                     'message' => 'An error occurred while creating the seeker',
-                    'status' => 500,
-                ]);
+                    'status' =>500 ,
+                ],500);
             } try {
                 $wallet1 = Wallet::create([
                     'seeker_id' => $seeker->id,
@@ -193,8 +196,61 @@ class SeekerController extends Controller
      */
     public function update(UpdateSeekerRequest $request, Seeker $seeker)
     {
-        //
-    }
+
+        $seeker = Seeker::findOrFail($seeker->id);
+        try {
+            $this->authorize('update', $seeker);
+            if ($request->hasAny(['address', 'city', 'country'])) {
+                $seeker->location()->update($request->only(['address', 'city', 'country']));
+            }
+
+            if ($request->hasAny(['mobile_phone', 'line_phone', 'website', 'linkedin_account', 'github_account', 'facebook_account'])) {
+                $seeker->communication()->update($request->only(['mobile_phone', 'line_phone', 'website', 'linkedin_account', 'github_account', 'facebook_account']));
+            }
+
+            $seeker->update($request->except(['user_id', 'location_id', 'communication_id']));
+
+            $picture = $request->file('picture');
+            if ($picture) {
+                $pictureName = Str::random(32) . "." . $picture->getClientOriginalExtension();
+                Storage::disk('public')->put($pictureName, file_get_contents($picture));
+
+                if ($seeker->picture) {
+                    Storage::disk('public')->delete($seeker->picture);
+                }
+
+                $seeker->picture = $pictureName;
+
+                $cv = $request->file('cv');
+                if ($cv) {
+                    $cvName = Str::random(32) . "." . $cv->getClientOriginalExtension();
+                    Storage::disk('public')->put($cvName, file_get_contents($cv));
+
+                    if ($seeker->cv) {
+                        Storage::disk('public')->delete($seeker->cv);
+                    }
+
+                    $seeker->cv = $cvName;
+                    $seeker->save();
+                }
+
+                return response()->json([
+                    'data' => new SeekerResource($seeker->load(['user', 'location', 'communication'])),
+                    'message' => 'Seeker updated successfully',
+                    'status' => 200
+                ], 200);
+            }
+        }catch (AuthorizationException $e) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ], 403);
+            }
+        }
+
+
+
+
 
     /**
      * Remove the specified resource from storage.

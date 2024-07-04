@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateSeekerRequest extends FormRequest
 {
@@ -11,7 +13,7 @@ class UpdateSeekerRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +24,37 @@ class UpdateSeekerRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'cv'=>'required|mimes:pdf|max:4096',
+            'level'=>'nullable|string',
+            'gender'=>'nullable|string',
+            'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'bio'=>'required|string',
+            'hourly_rate'=>'required',
+            'birth_date'=>'nullable|string',
+
+            'city' => 'nullable|min:2|max:50',
+            'country' => 'nullable|min:2|max:50',
+            'address' => 'required|min:2|max:255',
+
+            'mobile_phone' => 'required|string|max:255',
+            'line_phone' => 'nullable|string|max:255',
+            'website' => 'nullable|url',
+            'linkedin_account' => 'nullable|url',
+            'github_account' => 'nullable|url',
+            'facebook_account' => 'nullable|url'
         ];
+    }
+
+
+
+
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = $validator->errors();
+        $response = response()->json([
+            'message' => 'Invalid data send',
+            'details' => $errors->messages(),
+        ], 422);
+        throw new HttpResponseException($response);
     }
 }

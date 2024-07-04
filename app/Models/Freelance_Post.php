@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Freelance_Post extends Model
 {
     use HasFactory;
-
+    protected $table = 'freelance_posts';
 
     protected $fillable = [
         'company_id','seeker_id','category_id','title', 'description', 'delivery_date', 'min_budget','max_budget','post_status'

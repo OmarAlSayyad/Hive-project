@@ -4,10 +4,11 @@ namespace App\Policies;
 
 use App\Models\Seeker;
 use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 
 class SeekerPolicy
-{
+{use HandlesAuthorization;
     /**
      * Determine whether the user can view any models.
      */
@@ -35,9 +36,12 @@ class SeekerPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Seeker $seeker): bool
+    public function update(User $user, Seeker $seeker)
     {
-        //
+        if ($user->id !== $seeker->user_id) {
+            return $this->deny('You do not have permission to update this seeker.');
+        }
+        return true;
     }
 
     /**

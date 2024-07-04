@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\FreelancePostController;
 use App\Http\Controllers\SeekerController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\CompanyMiddleware;
@@ -22,6 +23,7 @@ Route::post('login',[UserController::class,'login'])->name('login')->name('login
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
 
+    Route::post('/add_freelancePost', [FreelancePostController::class, 'store']);
     Route::post('logout', [UserController::class, 'logout']);
 
 
@@ -29,6 +31,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/createSeekerProfile', [SeekerController::class, 'store']);
         Route::get('/get-all-Seeker', [SeekerController::class, 'index']);
         Route::get('/get_seeker_by_id/{seeker}', [SeekerController::class, 'show']);
+        Route::post('/seekers/{seeker}',[SeekerController::class,'update']);
 
     });
     Route::middleware([CompanyMiddleware::class])->group(function (){
