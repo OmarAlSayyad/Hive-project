@@ -5,9 +5,14 @@ namespace App\Policies;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
+use Illuminate\Auth\Access\HandlesAuthorization;
+
 
 class CompanyPolicy
 {
+    use HandlesAuthorization;
+
+
     /**
      * Determine whether the user can view any models.
      */
@@ -33,11 +38,17 @@ class CompanyPolicy
     }
 
     /**
-     * Determine whether the user can update the model.
+     * Determine whether the user can update the company.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Company  $company
+     * @return \Illuminate\Auth\Access\Response
      */
-    public function update(User $user, Company $company): bool
+    public function update(User $user, Company $company):Response
     {
-        //
+        return $user->id === $company->user_id
+            ? Response::allow()
+            : Response::deny('You do not own this company profile .');
     }
 
     /**

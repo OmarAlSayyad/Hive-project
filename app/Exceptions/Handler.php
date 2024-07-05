@@ -14,16 +14,18 @@
             AuthorizationException::class,
         ];
 
-        public function render($request, Throwable $exception)
+
+        public function render($request, Throwable $e)
         {
-            if ($exception instanceof AuthorizationException) {
+            if ($e instanceof AuthorizationException) {
                 return response()->json([
                     'success' => false,
-                    'message' => $exception->getMessage(),
+                    'message' => $e->getMessage(),
                 ], 403);
             }
 
-            return parent::render($request, $exception);
+            return parent::render($request, $e);
         }
+
     }
 

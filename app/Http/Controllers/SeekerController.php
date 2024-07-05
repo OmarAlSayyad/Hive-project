@@ -200,6 +200,7 @@ class SeekerController extends Controller
         $seeker = Seeker::findOrFail($seeker->id);
         try {
             $this->authorize('update', $seeker);
+
             if ($request->hasAny(['address', 'city', 'country'])) {
                 $seeker->location()->update($request->only(['address', 'city', 'country']));
             }

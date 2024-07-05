@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class StoreCompanyRequest extends FormRequest
 {
@@ -21,24 +23,31 @@ class StoreCompanyRequest extends FormRequest
      */
     public function rules(): array
     {
-            return [
-                'user_id' => 'required|exists:users,id',
-                'industry' => 'required|string|max:255',
-                'description' => 'required|string',
-                'picture' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        return [
+            'industry' => 'required|string|max:255',
+            'description' => 'required|string',
+            'picture' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
 
-                'city' => 'required|min:2|max:50|alpha',
-                'country' => 'required|min:2|max:50|alpha',
-                'address' => 'required|min:2|max:255',
+            'city' => 'required|min:2|max:50|alpha',
+            'country' => 'required|min:2|max:50|alpha',
+            'address' => 'required|min:2|max:255',
 
-                'mobile_phone' => 'required|string|max:255',
-                'line_phone' => 'required|string|max:255',
-                'website' => 'required|url',
-                'linkedin_account' => 'nullable|url',
-                'github_account' => 'nullable|url',
-                'facebook_account' => 'nullable|url',
-
-            ];
-
+            'mobile_phone' => 'required|string|max:255',
+            'line_phone' => 'required|string|max:255',
+            'website' => 'required|url',
+            'linkedin_account' => 'nullable|url',
+            'github_account' => 'nullable|url',
+            'facebook_account' => 'nullable|url',
+        ];
     }
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = $validator->errors();
+        $response = response()->json([
+            'message' => 'Invalid data send',
+            'details' => $errors->messages(),
+        ], 422);
+        throw new HttpResponseException($response);
+    }
+
 }

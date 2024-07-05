@@ -16,9 +16,7 @@ class CompanyResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user_id' => $this->user_id,
-            'location_id' => $this->location_id,
-            'communication_id' => $this->communication_id,
+
             'picture' => $this->picture,
             'industry' => $this->industry,
             'description' => $this->description,
@@ -26,13 +24,12 @@ class CompanyResource extends JsonResource
             'approved' => $this->approved,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+
             'user' => new UserResource($this->user),
             'location' => new LocationResource($this->location),
             'communication' => new CommunicationResource($this->communication),
             //'wallet' => WalletResource::collection($this->whenLoaded('wallet')),
-
         ];
-
 
     }
 }

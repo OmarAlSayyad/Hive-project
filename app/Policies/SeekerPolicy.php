@@ -8,7 +8,8 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 
 class SeekerPolicy
-{use HandlesAuthorization;
+{
+    use HandlesAuthorization;
     /**
      * Determine whether the user can view any models.
      */

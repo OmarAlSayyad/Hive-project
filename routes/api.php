@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\FreelancePostController;
+use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\SeekerController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\CompanyMiddleware;
@@ -39,7 +40,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/companies',[CompanyController::class,'index'])->name('api.companies.index');
         Route::get('/companies/{company}', [CompanyController::class, 'show'])->name('api.companies.show');
         Route::post('/companies',[CompanyController::class,'store'])->name('api.companies.store');
-        Route::put('/companies/{company}',[CompanyController::class,'update'])->name('api.companies.update');
+        Route::post('/companies/{company}',[CompanyController::class,'update'])->name('api.companies.update');
+
+        Route::get('/job_post',[JobPostController::class,'index'])->name('api.job_post.index');
+        Route::get('/job_post/{job}', [JobPostController::class, 'show'])->name('api.job_post.show');
+        Route::post('/job_post',[JobPostController::class,'store'])->name('api.job_post.store');
+        Route::post('/job_post/{job}',[JobPostController::class,'update'])->name('api.job_post.update');
+
 
 
     });

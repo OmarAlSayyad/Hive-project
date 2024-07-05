@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\JobPostsResource;
 use App\Models\Job_Post;
 use App\Http\Requests\StoreJob_PostRequest;
 use App\Http\Requests\UpdateJob_PostRequest;
@@ -13,7 +14,8 @@ class JobPostController extends Controller
      */
     public function index()
     {
-        //
+        $jobs = Job_Post::with('company','category','skill')->get();
+        return JobPostsResource::collection($jobs);
     }
 
     /**

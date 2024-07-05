@@ -11,8 +11,10 @@ use App\Models\Locations;
 use App\Models\User;
 use App\Models\Wallet;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -41,6 +43,7 @@ class CompanyController extends Controller
     {
         $companies = Company::with('user','location', 'communication')->get();
         return response($companies);
+        // return CompanyResource::collection($companies);
     }
 
     /**
@@ -57,16 +60,17 @@ class CompanyController extends Controller
     public function store(StoreCompanyRequest $request)
     {
         try {
-            $validated = $request->validated();
-            if (!$validated) {
+            $user = Auth::user();
+            $existingCompany= Company::where('user_id', $user->id)->first();
+
+            if ($existingCompany )
+            {
                 return response()->json([
                     'data' => '',
-                    'message' => $request->errors()->all(),
-                    'status' => 422
-                ]);
+                    'message' => 'User already exist',
+                    'status' => 500,
+                ],500);
             }
-            $user = User::findOrFail($request->user_id);
-
             try {
                 $location =Locations::create([
                     'address' => $request->input('address',null),
@@ -79,7 +83,7 @@ class CompanyController extends Controller
                     'data' => '',
                     'message' => 'An error occurred while creating the location',
                     'status' => 500
-                ]);
+                ],500);
             }
             try {
                 $communication = Communication::create([
@@ -124,7 +128,7 @@ class CompanyController extends Controller
                     'data' => '',
                     'message' => 'An error occurred while creating the company',
                     'status' => 500
-                ]);
+                ],500);
             }
             try {
                 $wallet = Wallet::create([
@@ -184,104 +188,47 @@ class CompanyController extends Controller
 
     public function update(UpdateCompanyRequest $request, Company $company)
     {
-        // Start a database transaction
-        DB::beginTransaction();
+
+        $company = Company::findOrFail($company->id);
+
         try {
-//            $validated = $request->validated();
-//            if (!$validated) {
-//                return response()->json([
-//                    'data' => '',
-//                    'message' => $request->getMessages(),
-//                    'status' => 422
-//                ], 422);
-//            }
+            $this->authorize('update', $company);
 
-            try {
-                $company->update([
-                    'industry' => $request->input('industry'),
-                    'description' => $request->input('description'),
-                ]);
-                $company->save();
-            } catch (Exception $e) {
-                Log::error('Error updating company: ' . $e->getMessage());
-                return response()->json([
-                    'data' => '',
-                    'message' => 'An error occurred while updating the company',
-                    'status' => 500
-                ]);
+            if ($request->hasAny(['address', 'city', 'country'])) {
+                $company->location()->update($request->only(['address', 'city', 'country']));
             }
 
-            try {
-                $company->communication()->update([
-                    'mobile_phone' => $request->input('mobile_phone'),
-                    'line_phone' => $request->input('line_phone'),
-                    'website' => $request->input('website'),
-                    'linkedin_account' => $request->input('linkedin_account'),
-                    'github_account' => $request->input('github_account'),
-                    'facebook_account' => $request->input('facebook_account'),
-                ]);
-                $company->communication()->save();
-            } catch (Exception $e) {
-                Log::error('Error updating location: ' . $e->getMessage());
-                return response()->json([
-                    'data' => '',
-                    'message' => 'An error occurred while updating the location',
-                    'status' => 500
-                ]);
+            if ($request->hasAny(['mobile_phone', 'line_phone', 'website', 'linkedin_account', 'github_account', 'facebook_account'])) {
+                $company->communication()->update($request->only(['mobile_phone', 'line_phone', 'website', 'linkedin_account', 'github_account', 'facebook_account']));
             }
 
-            try {
-                $company->location()->update([
-                    'address' => $request->input('address'),
-                    'country' => $request->input('country'),
-                    'city' => $request->input('city'),
-                ]);
-                $company->location()->save();
-            } catch (Exception $e) {
-                Log::error('Error updating location: ' . $e->getMessage());
-                return response()->json([
-                    'data' => '',
-                    'message' => 'An error occurred while updating the location',
-                    'status' => 500
-                ]);
-            }
+            $company->update($request->except(['user_id', 'location_id', 'communication_id']));
 
-            if ($request->hasFile('picture')) {
-                $picture = $request->file('picture');
+            $picture = $request->file('picture');
+            if ($picture) {
                 $pictureName = Str::random(32) . "." . $picture->getClientOriginalExtension();
                 Storage::disk('public')->put($pictureName, file_get_contents($picture));
 
-                $company->update(['picture' => $pictureName]);
+                if ($company->picture) {
+                    Storage::disk('public')->delete($company->picture);
+                }
+
+                $company->picture = $pictureName;
+                $company->save();
             }
 
-            // Commit the database transaction
-            DB::commit();
-
             return response()->json([
-                'data' => $company->fresh(),
+                'data' => new CompanyResource($company->load(['user', 'location', 'communication'])),
                 'message' => 'Company updated successfully',
                 'status' => 200
             ], 200);
-        } catch (ValidationException $e) {
-            // Rollback the database transaction on validation error
-            DB::rollBack();
+        } catch (AuthorizationException $e) {
             return response()->json([
-                'data' => '',
-                'message' => $e->errors(),
-                'status' => 422
-            ], 422);
-        } catch (Exception $e) {
-            // Rollback the database transaction on any other exception
-            DB::rollBack();
-            Log::error('Error processing request: ' . $e->getMessage());
-            return response()->json([
-                'data' => '',
-                'message' => 'An error occurred while processing the request',
-                'status' => 500
-            ], 500);
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 403);
         }
     }
-
 
     /**
      * Remove the specified resource from storage.
