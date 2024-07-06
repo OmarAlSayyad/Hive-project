@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\SeekerResource;
-use App\Models\Freelance_Post;
-use App\Http\Requests\StoreFreelance_PostRequest;
-use App\Http\Requests\UpdateFreelance_PostRequest;
-use Exception;
-use Illuminate\Support\Facades\Log;
+use App\Http\Resources\FreelancePostsResource;
+use App\Models\FreelancePost;
+use App\Http\Requests\StoreFreelancePostRequest;
+use App\Http\Requests\UpdateFreelancePostRequest;
 
 class FreelancePostController extends Controller
 {
@@ -16,7 +14,8 @@ class FreelancePostController extends Controller
      */
     public function index()
     {
-        //
+        $freelancePosts = FreelancePost::with('seeker','category','skill')->get();
+        return FreelancePostsResource::collection($freelancePosts);
     }
 
     /**
@@ -24,53 +23,53 @@ class FreelancePostController extends Controller
      */
     public function create()
     {
-
+        //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreFreelance_PostRequest $request)
+    public function store(StoreFreelancePostRequest $request)
     {
-        try {
-            $validated = $request->validated();
-            if (!$validated) {
-                return response()->json([
-                    'data' => '',
-                    'message' => $request->errors()->all(),
-                    'status' => 422,
-                ]);
-            }
-            $freelancepost = Freelance_Post::create([
-                'seeker_id' => $request->seeker_id,
-                'company_id'=>$request->company_id,
-                'category_id' => $request->category_id,
-                'title' => $request->title,
-                'description' => $request->description,
-                'delivery_date' => $request->delivery_date,
-                'min_budget' => $request->min_budget,
-                'max_budget' => $request->max_budget,
-
-            ]);
-        } catch (Exception $e) {
-            Log::error('Error creating freelance :' . $e->getMessage());
+        //try {
+        $validated = $request->validated();
+        if (!$validated) {
             return response()->json([
                 'data' => '',
-                'message' => 'An error occurred while creating the freelance post',
-                'status' => 500,
-            ], 500);
+                'message' => $request->errors()->all(),
+                'status' => 422,
+            ]);
         }
+        $freelancepost = FreelancePost::create([
+            'seeker_id' => $request->seeker_id,
+            'company_id'=>$request->company_id,
+            'category_id' => $request->category_id,
+            'title' => $request->title,
+            'description' => $request->description,
+            'delivery_date' => $request->delivery_date,
+            'min_budget' => $request->min_budget,
+            'max_budget' => $request->max_budget,
+
+        ]);
+        //   } catch (Exception $e) {
+        //     Log::error('Error creating freelance :' . $e->getMessage());
+        //   return response()->json([
+        //     'data' => '',
+        //   'message' => 'An error occurred while creating the freelance post',
+        // 'status' => 500,
+        //], 500);
+        // }
         return response()->json([
-           // 'data' =>  new SeekerResource($seeker->load(['user', 'location', 'communication'])),
+            'data' =>  new FreelancePostsResource($freelancepost->load(['category'])),
             'message' => ' freelance post created successfully',
             'status' => 200,
-        ]);
+        ],200);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Freelance_Post $freelance_Post)
+    public function show(FreelancePost $freelancePost)
     {
         //
     }
@@ -78,7 +77,7 @@ class FreelancePostController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Freelance_Post $freelance_Post)
+    public function edit(FreelancePost $freelancePost)
     {
         //
     }
@@ -86,7 +85,7 @@ class FreelancePostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateFreelance_PostRequest $request, Freelance_Post $freelance_Post)
+    public function update(UpdateFreelancePostRequest $request, FreelancePost $freelancePost)
     {
         //
     }
@@ -94,7 +93,7 @@ class FreelancePostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Freelance_Post $freelance_Post)
+    public function destroy(FreelancePost $freelancePost)
     {
         //
     }

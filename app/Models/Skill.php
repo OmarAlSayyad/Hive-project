@@ -25,12 +25,12 @@ class Skill extends Model
 
     public function job_post()
     {
-        return $this->belongsToMany(Job_Post::class, 'required_skills');
+        return $this->belongsToMany(JobPost::class, 'required_skills');
     }
 
     public function freelance_post()
     {
-        return $this->belongsToMany(Freelance_Post::class, 'required_skills');
+        return $this->belongsToMany(FreelancePost::class, 'required_skills');
     }
 
 }

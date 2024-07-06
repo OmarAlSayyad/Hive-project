@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class StoreFreelance_PostRequest extends FormRequest
+class StoreFreelancePostRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -32,9 +32,6 @@ class StoreFreelance_PostRequest extends FormRequest
             'delivery_date'=>'required|date',
             'min_budget'=>'required',
             'max_budget'=>'required',
-
-
-
         ];
     }
     protected function failedValidation(Validator $validator)

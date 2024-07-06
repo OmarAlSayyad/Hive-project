@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Seeker_Language extends Model
+class RequiredSkill extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'seeker_id','language_id'
-];
+        'skill_id','job_post_id','freelance_post_id'
+    ];
 }

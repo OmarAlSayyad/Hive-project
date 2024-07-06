@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use App\Models\Seeker;
 
 class CategoryController extends Controller
 {
@@ -13,7 +15,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $category=Category::all();
+        return response($category);
     }
 
     /**
@@ -37,7 +40,9 @@ class CategoryController extends Controller
      */
     public function show(Category $category)
     {
-        //
+
+            return new CategoryResource($category->load(['skill']));
+
     }
 
     /**

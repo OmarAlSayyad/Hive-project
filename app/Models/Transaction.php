@@ -22,7 +22,7 @@ class Transaction extends Model
     }
     public function freelance_post()
     {
-        return $this->belongsTo(Freelance_Post::class);
+        return $this->belongsTo(FreelancePost::class);
     }
     public function receiver()
     {

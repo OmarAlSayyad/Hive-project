@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\JobPostsResource;
-use App\Models\Job_Post;
+use App\Models\JobPost;
 use App\Http\Requests\StoreJob_PostRequest;
 use App\Http\Requests\UpdateJob_PostRequest;
 
@@ -14,7 +14,7 @@ class JobPostController extends Controller
      */
     public function index()
     {
-        $jobs = Job_Post::with('company','category','skill')->get();
+        $jobs = JobPost::with('company','category','skill')->get();
         return JobPostsResource::collection($jobs);
     }
 
@@ -37,7 +37,7 @@ class JobPostController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Job_Post $job_Post)
+    public function show(JobPost $job_Post)
     {
         //
     }
@@ -45,7 +45,7 @@ class JobPostController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Job_Post $job_Post)
+    public function edit(JobPost $job_Post)
     {
         //
     }
@@ -53,7 +53,7 @@ class JobPostController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateJob_PostRequest $request, Job_Post $job_Post)
+    public function update(UpdateJob_PostRequest $request, JobPost $job_Post)
     {
         //
     }
@@ -61,7 +61,7 @@ class JobPostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Job_Post $job_Post)
+    public function destroy(JobPost $job_Post)
     {
         //
     }

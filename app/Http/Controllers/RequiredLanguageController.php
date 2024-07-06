@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Required_Language;
-use App\Http\Requests\StoreRequired_LanguageRequest;
-use App\Http\Requests\UpdateRequired_LanguageRequest;
+use App\Models\RequiredLanguage;
+use App\Http\Requests\StoreRequiredLanguageRequest;
+use App\Http\Requests\UpdateRequiredLanguageRequest;
 
 class RequiredLanguageController extends Controller
 {
@@ -27,7 +27,7 @@ class RequiredLanguageController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreRequired_LanguageRequest $request)
+    public function store(StoreRequiredLanguageRequest $request)
     {
         //
     }
@@ -35,7 +35,7 @@ class RequiredLanguageController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Required_Language $required_Language)
+    public function show(RequiredLanguage $requiredLanguage)
     {
         //
     }
@@ -43,7 +43,7 @@ class RequiredLanguageController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Required_Language $required_Language)
+    public function edit(RequiredLanguage $requiredLanguage)
     {
         //
     }
@@ -51,7 +51,7 @@ class RequiredLanguageController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRequired_LanguageRequest $request, Required_Language $required_Language)
+    public function update(UpdateRequiredLanguageRequest $request, RequiredLanguage $requiredLanguage)
     {
         //
     }
@@ -59,7 +59,7 @@ class RequiredLanguageController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Required_Language $required_Language)
+    public function destroy(RequiredLanguage $requiredLanguage)
     {
         //
     }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\FreelancePostController;
 use App\Http\Controllers\JobPostController;
@@ -23,8 +24,14 @@ Route::post('login',[UserController::class,'login'])->name('login')->name('login
 
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
-
+//add freelance post from seeker or company
     Route::post('/add_freelancePost', [FreelancePostController::class, 'store']);
+
+//get categories from seeker or company
+    Route::get('/get-all-categories', [CategoryController::class, 'index']);
+    Route::get('/get-category-by-id/{category}', [CategoryController::class, 'show']);
+
+    // logout from the app
     Route::post('logout', [UserController::class, 'logout']);
 
 

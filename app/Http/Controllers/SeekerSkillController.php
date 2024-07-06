@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Seeker_Skill;
-use App\Http\Requests\StoreSeeker_SkillRequest;
-use App\Http\Requests\UpdateSeeker_SkillRequest;
+use App\Models\SeekerSkill;
+use App\Http\Requests\StoreSeekerSkillRequest;
+use App\Http\Requests\UpdateSeekerSkillRequest;
 
 class SeekerSkillController extends Controller
 {
@@ -27,7 +27,7 @@ class SeekerSkillController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreSeeker_SkillRequest $request)
+    public function store(StoreSeekerSkillRequest $request)
     {
         //
     }
@@ -35,7 +35,7 @@ class SeekerSkillController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Seeker_Skill $seeker_Skill)
+    public function show(SeekerSkill $seekerSkill)
     {
         //
     }
@@ -43,7 +43,7 @@ class SeekerSkillController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Seeker_Skill $seeker_Skill)
+    public function edit(SeekerSkill $seekerSkill)
     {
         //
     }
@@ -51,7 +51,7 @@ class SeekerSkillController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateSeeker_SkillRequest $request, Seeker_Skill $seeker_Skill)
+    public function update(UpdateSeekerSkillRequest $request, SeekerSkill $seekerSkill)
     {
         //
     }
@@ -59,7 +59,7 @@ class SeekerSkillController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Seeker_Skill $seeker_Skill)
+    public function destroy(SeekerSkill $seekerSkill)
     {
         //
     }

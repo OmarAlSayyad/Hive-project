@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\Required_Language;
+use App\Models\RequiredLanguage;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -19,7 +19,7 @@ class RequiredLanguagePolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Required_Language $requiredLanguage): bool
+    public function view(User $user, RequiredLanguage $requiredLanguage): bool
     {
         //
     }
@@ -35,7 +35,7 @@ class RequiredLanguagePolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Required_Language $requiredLanguage): bool
+    public function update(User $user, RequiredLanguage $requiredLanguage): bool
     {
         //
     }
@@ -43,7 +43,7 @@ class RequiredLanguagePolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Required_Language $requiredLanguage): bool
+    public function delete(User $user, RequiredLanguage $requiredLanguage): bool
     {
         //
     }
@@ -51,7 +51,7 @@ class RequiredLanguagePolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Required_Language $requiredLanguage): bool
+    public function restore(User $user, RequiredLanguage $requiredLanguage): bool
     {
         //
     }
@@ -59,7 +59,7 @@ class RequiredLanguagePolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Required_Language $requiredLanguage): bool
+    public function forceDelete(User $user, RequiredLanguage $requiredLanguage): bool
     {
         //
     }
