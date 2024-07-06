@@ -28,7 +28,7 @@ class FreelancePostsResource extends JsonResource
 
             'seeker' => new SeekerResource($this->seeker),
             'category' => new CategoryResource($this->category),
-          //  'skill' => new SkillsResource($this->skill),
+           'skill' => new SkillsResource($this->skill),
         ];
     }
 }

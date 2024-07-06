@@ -6,6 +6,8 @@ use App\Http\Resources\FreelancePostsResource;
 use App\Models\FreelancePost;
 use App\Http\Requests\StoreFreelancePostRequest;
 use App\Http\Requests\UpdateFreelancePostRequest;
+use Exception;
+use Illuminate\Support\Facades\Log;
 
 class FreelancePostController extends Controller
 {
@@ -31,7 +33,7 @@ class FreelancePostController extends Controller
      */
     public function store(StoreFreelancePostRequest $request)
     {
-        //try {
+        try {
         $validated = $request->validated();
         if (!$validated) {
             return response()->json([
@@ -51,16 +53,16 @@ class FreelancePostController extends Controller
             'max_budget' => $request->max_budget,
 
         ]);
-        //   } catch (Exception $e) {
-        //     Log::error('Error creating freelance :' . $e->getMessage());
-        //   return response()->json([
-        //     'data' => '',
-        //   'message' => 'An error occurred while creating the freelance post',
-        // 'status' => 500,
-        //], 500);
-        // }
+           } catch (Exception $e) {
+             Log::error('Error creating freelance :' . $e->getMessage());
+           return response()->json([
+             'data' => '',
+           'message' => 'An error occurred while creating the freelance post',
+         'status' => 500,
+        ], 500);
+         }
         return response()->json([
-            'data' =>  new FreelancePostsResource($freelancepost->load(['category'])),
+            'data' =>  new FreelancePostsResource($freelancepost->load(['seeker','category','skill'])),
             'message' => ' freelance post created successfully',
             'status' => 200,
         ],200);
