@@ -6,14 +6,14 @@ use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class StoreFreelance_PostRequest extends FormRequest
+class StoreJobPostRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -24,18 +24,30 @@ class StoreFreelance_PostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'seeker_id'=>'nullable|exists:seekers,id',
-            'company_id'=>'nullable|exists:companies,id',
+            'company_id'=>'required|exists:companies,id',
             'category_id'=>'required|exists:categories,id',
+
             'title'=>'required|string',
             'description'=>'required|string',
-            'delivery_date'=>'required|date',
-            'min_budget'=>'required',
-            'max_budget'=>'required',
+            'job_requirement'=>'required',
+            'address'=>'required',
+
+            'gender'=>'required|string',
+            'min_age'=>'required|numeric',
+            'max_age'=>'required|numeric',
+
+            'scientific_level'=>'required|string',
+            'job_type'=>'required|string',
+            'experience_years'=>'required|numeric',
+
+            'min_salary'=>'required|numeric',
+            'max_salary'=>'required|numeric',
+
 
 
         ];
     }
+
     protected function failedValidation(Validator $validator)
     {
         $errors = $validator->errors();
@@ -45,4 +57,5 @@ class StoreFreelance_PostRequest extends FormRequest
         ], 422);
         throw new HttpResponseException($response);
     }
+
 }

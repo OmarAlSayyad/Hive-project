@@ -26,7 +26,7 @@ return new class extends Migration
             $table->smallInteger('min_age');
             $table->smallInteger('max_age');
 
-            $table->enum('scientific_level',['High School','Diploma','Bachelor_degree','Master','Ph.D','not_required']);
+            $table->enum('scientific_level',['High_School','Diploma','Bachelor_degree','Master','Ph.D','not_required']);
             $table->enum('job_type',['Full_time','Part_time','Remotely']);
             $table->smallInteger('experience_years');
             $table->decimal('min_salary', 10, 2);
@@ -37,7 +37,6 @@ return new class extends Migration
 
             $table->index('company_id');
             $table->index('category_id');
-
 
         });
     }

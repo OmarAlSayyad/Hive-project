@@ -67,7 +67,7 @@ class CompanyController extends Controller
             {
                 return response()->json([
                     'data' => '',
-                    'message' => 'User already exist',
+                    'message' => 'Company already exist',
                     'status' => 500,
                 ],500);
             }
