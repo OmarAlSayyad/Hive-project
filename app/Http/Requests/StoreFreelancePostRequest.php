@@ -32,6 +32,17 @@ class StoreFreelancePostRequest extends FormRequest
             'delivery_date'=>'required|date',
             'min_budget'=>'required',
             'max_budget'=>'required',
+            'skill_ids' => 'required|array',
+            'skill_ids.*' => 'exists:skills,id',
+        ];
+
+    }
+    public function messages()
+    {
+        return [
+            'skill_ids.required' => 'The skill IDs field is required.',
+            'skill_ids.array' => 'The skill IDs must be an array.',
+            'skill_ids.*.exists' => 'The selected skill is invalid.',
         ];
     }
     protected function failedValidation(Validator $validator)

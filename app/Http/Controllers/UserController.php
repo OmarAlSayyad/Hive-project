@@ -77,14 +77,14 @@ class UserController extends Controller
             return response()->json([
                 'data' => '',
                 'message' => 'success logout ,Good Bye',
-                'status' => 400
-            ]);
+                'status' => 200
+            ],200);
         }
         return response()->json([
             'data' => '',
             'message' => 'something is wrong while you trying logout',
-            'status' => 200,
-        ]);
+            'status' => 400,
+        ],400);
     }
     public function index(Request $request)
     {

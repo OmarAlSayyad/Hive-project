@@ -25,6 +25,6 @@ class CompanyMiddleware
             'data' => '',
             'message'=>'unauthorized',
             'status' => 401
-        ]);
+        ],401);
         redirect(back());    }
 }

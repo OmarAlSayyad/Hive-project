@@ -60,7 +60,7 @@ class User extends Authenticatable
 
     public function seeker_language()
     {
-        return $this->hasMany(Seeker_Language::class);
+        return $this->hasMany(SeekerLanguage::class);
     }
 
 

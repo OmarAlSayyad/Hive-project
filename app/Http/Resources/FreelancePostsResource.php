@@ -27,8 +27,8 @@ class FreelancePostsResource extends JsonResource
             'max_budget' => $this->max_budget,
 
             'seeker' => new SeekerResource($this->seeker),
-            'category' => new CategoryResource($this->category),
-           'skill' => new SkillsResource($this->skill),
+            'category' => new CategoryResource($this->whenLoaded('category')),
+            'skill' => SkillsResource::collection($this->whenLoaded('skill')),
         ];
     }
 }

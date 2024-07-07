@@ -4,10 +4,13 @@ namespace App\Policies;
 
 use App\Models\FreelancePost;
 use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
+use Illuminate\Support\Facades\Log;
 
 class FreelancePostPolicy
 {
+    use HandlesAuthorization;
     /**
      * Determine whether the user can view any models.
      */
@@ -35,10 +38,21 @@ class FreelancePostPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, FreelancePost $freelancePost): bool
+    public function update(User $user, FreelancePost $freelancePost)
     {
-        //
+        $seeker = $user->seeker;
+
+
+
+        Log::info('User Seeker ID: ' . ($seeker ? $seeker->id : 'null'));
+        Log::info('FreelancePost Seeker ID: ' . $freelancePost->seeker_id);
+        if (!$seeker || $seeker->id !== $freelancePost->seeker_id) {
+            return $this->deny('You do not have permission to update this freelance post.');
+        }
+
+        return true;
     }
+
 
     /**
      * Determine whether the user can delete the model.

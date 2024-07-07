@@ -24,8 +24,10 @@ class FreelancePost extends Model
 
     public function skill()
     {
-        return $this->belongsToMany(Skill::class, 'required_skills');
+        return $this->belongsToMany(Skill::class, 'required_skills', 'freelance_post_id', 'skill_id');
     }
+
+
 
     public function language()
     {

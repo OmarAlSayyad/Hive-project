@@ -11,4 +11,13 @@ class RequiredSkill extends Model
     protected $fillable = [
         'skill_id','job_post_id','freelance_post_id'
     ];
+
+//    public function  skills()
+//    {
+//        return $this->hasMany(Skill::class);
+//    }
+//    public function skillss()
+//    {
+//        return $this->hasMany(FreelancePost::class);
+//    }
 }

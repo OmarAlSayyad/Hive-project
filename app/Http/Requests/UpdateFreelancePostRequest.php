@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateFreelancePostRequest extends FormRequest
 {
@@ -11,7 +13,7 @@ class UpdateFreelancePostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +24,32 @@ class UpdateFreelancePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'category_id'=>'required|exists:categories,id',
+            'title'=>'required|string',
+            'description'=>'required|string',
+            'delivery_date'=>'required|date',
+            'min_budget'=>'required',
+            'max_budget'=>'required',
+            'skill_ids' => 'required|array',
+            'skill_ids.*' => 'exists:skills,id',
+        ];
+
+    }
+    public function messages()
+    {
+        return [
+            'skill_ids.required' => 'The skill IDs field is required.',
+            'skill_ids.array' => 'The skill IDs must be an array.',
+            'skill_ids.*.exists' => 'The selected skill is invalid.',
         ];
     }
+//    protected function failedValidation(Validator $validator)
+//    {
+//        $errors = $validator->errors();
+//        $response = response()->json([
+//            'message' => 'Invalid data send',
+//            'details' => $errors->messages(),
+//        ], 422);
+//        throw new HttpResponseException($response);
+//    }
 }
