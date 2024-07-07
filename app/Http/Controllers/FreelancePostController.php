@@ -92,6 +92,15 @@ class FreelancePostController extends Controller
     public function getFreelancePosts(Seeker $seeker)
     {
         try {
+            try {
+                $this->authorize('view', $seeker);
+
+            }catch (AuthorizationException $e){
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ], 403);
+            }
             $freelancePost = FreelancePost::with(['category', 'skill'])
                 ->where('seeker_id', $seeker->id)
                 ->get();
@@ -187,6 +196,24 @@ class FreelancePostController extends Controller
      */
     public function destroy(FreelancePost $freelancePost)
     {
-        //
+        try {
+            $freelancePost->skill()->detach();
+
+            $freelancePost->delete();
+
+            return response()->json([
+                'data' => '',
+                'message' => 'Freelance post deleted successfully',
+                'status' => 200,
+            ], 200);
+
+        } catch (Exception $e) {
+            Log::error('Error deleting freelance post: ' . $e->getMessage());
+            return response()->json([
+                'data' => '',
+                'message' => 'An error occurred while deleting the freelance post',
+                'status' => 500,
+            ], 500);
+        }
     }
 }

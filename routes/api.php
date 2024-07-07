@@ -12,9 +12,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
     //create user account
-    Route::post('register', [UserController::class, 'register']);
+    Route::post('register', [UserController::class, 'register'])->name('register');
     //login
-    Route::post('login',[UserController::class,'login'])->name('login')->name('login');
+    Route::post('login',[UserController::class,'login'])->name('login');
 
 
 
@@ -22,25 +22,25 @@ use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => ['auth:sanctum']], function () {
 
     //get all categories from seeker or company
-    Route::get('/categories', [CategoryController::class, 'index']);
+    Route::get('/categories', [CategoryController::class, 'index'])->name('api.categories.index');
 
     //get all category by id from seeker or company
-    Route::get('/categories/{category}', [CategoryController::class, 'show']);
+    Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('api.categories.show');
 
     // logout from the app
-    Route::post('logout', [UserController::class, 'logout']);
+    Route::post('logout', [UserController::class, 'logout'])->name('logout');
 
 
     Route::middleware([SeekerMiddleware::class])->group(function () {
 
         //show all seekers
-        Route::get('/seekers', [SeekerController::class, 'index']);
+        Route::get('/seekers', [SeekerController::class, 'index'])->name('api.seekers.index');
         //show seeker by id
-        Route::get('/seekers/{seeker}', [SeekerController::class, 'show']);
+        Route::get('/seekers/{seeker}', [SeekerController::class, 'show'])->name('api.seekers.show');
         //create seeker profile
-        Route::post('/seekers', [SeekerController::class, 'store']);
+        Route::post('/seekers', [SeekerController::class, 'store'])->name('api.seekers.store');
         //modify seeker profile
-        Route::post('/seekers/{seeker}',[SeekerController::class,'update']);
+        Route::post('/seekers/{seeker}',[SeekerController::class,'update'])->name('api.seekers.update');
 
 
         //show all freelance posts
@@ -51,9 +51,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/freelance_post', [FreelancePostController::class, 'store'])->name('api.freelance_post.store');
         //modify the freelance post
         Route::post('/freelance_post/{freelancePost}',[FreelancePostController::class,'update'])->name('api.freelance_post.update');
-
-        Route::get('/seeker_post/{seeker}',[FreelancePostController::class,'getFreelancePosts'])->name('api.freelance_post.index');
-
+        // show all seeker posts
+        Route::get('/seeker_post/{seeker}',[FreelancePostController::class,'getFreelancePosts'])->name('api.freelance_post.getFreelancePosts');
+        //delete freelance post
+        Route::delete('/freelance_post/{freelancePost}',[FreelancePostController::class,'destroy'])->name('api.freelance_post.destroy');
 
     });
     Route::middleware([CompanyMiddleware::class])->group(function (){

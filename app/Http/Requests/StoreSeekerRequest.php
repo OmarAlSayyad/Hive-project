@@ -25,19 +25,19 @@ class StoreSeekerRequest extends FormRequest
     {
         return [
           //  'user_id' => 'required|exists:users,id',
-            'cv'=>'required|mimes:pdf|max:4096',
+            'cv'=>'nullable|mimes:pdf|max:4096',
             'level'=>'nullable|string',
             'gender'=>'nullable|string',
             'picture' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'bio'=>'required|string',
-            'hourly_rate'=>'required',
+            'bio'=>'nullable|string',
+            'hourly_rate'=>'nullable',
             'birth_date'=>'nullable|string',
 
             'city' => 'nullable|min:2|max:50',
             'country' => 'nullable|min:2|max:50',
-            'address' => 'required|min:2|max:255',
+            'address' => 'nullable|min:2|max:255',
 
-            'mobile_phone' => 'required|string|max:255',
+            'mobile_phone' => 'nullable|string|max:255',
             'line_phone' => 'nullable|string|max:255',
             'website' => 'nullable|url',
             'linkedin_account' => 'nullable|url',

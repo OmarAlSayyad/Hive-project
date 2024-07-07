@@ -16,7 +16,7 @@ class UserController extends Controller
 
 
     public function register(StoreUserRequest $request)
-    {//    $user = Auth::user();
+    {
         $validate=$request->validated();
         if(!$validate)
         {
@@ -37,7 +37,7 @@ class UserController extends Controller
             $token = $user->createToken('API TOKEN')->plainTextToken;
             $user->token = $token;
             return response()->json([
-                'data'=>'OK',
+                'id'=>$user->id,
                 'message'=>'successful',
                 'status' => 200,
                 'userToken'=>$user->token,
@@ -58,8 +58,9 @@ class UserController extends Controller
         ]);
         if(Auth()->attempt($attribute)){
             $token = request()->user()->createToken('API TOKEN')->plainTextToken;
+            $id=request()->user()->id;
             return response()->json([
-                'data'=>'OK',
+                'id'=>$id,
                 'message'=>'success login',
                 'status'=>200,
                 'userToken'=>$token

@@ -21,9 +21,12 @@ class SeekerPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Seeker $seeker): bool
+    public function view(User $user, Seeker $seeker)
     {
-        //
+        if ($user->id !== $seeker->user_id) {
+            return $this->deny('You do not have permission to show this freelance posts.');
+        }
+        return true;
     }
 
     /**

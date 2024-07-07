@@ -22,9 +22,9 @@ class FreelancePostPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, FreelancePost $freelancePost): bool
+    public function view(User $user, FreelancePost $freelancePost)
     {
-        //
+
     }
 
     /**
@@ -42,16 +42,15 @@ class FreelancePostPolicy
     {
         $seeker = $user->seeker;
 
-
-
-        Log::info('User Seeker ID: ' . ($seeker ? $seeker->id : 'null'));
-        Log::info('FreelancePost Seeker ID: ' . $freelancePost->seeker_id);
         if (!$seeker || $seeker->id !== $freelancePost->seeker_id) {
             return $this->deny('You do not have permission to update this freelance post.');
         }
 
         return true;
     }
+
+
+
 
 
     /**
