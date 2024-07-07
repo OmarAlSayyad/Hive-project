@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Models\Company;
+use App\Models\Seeker;
 use App\Policies\CompanyPolicy;
+use App\Policies\SeekerPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -11,6 +13,7 @@ class AuthServiceProvider extends ServiceProvider
 
 
     protected $policies = [
+        Seeker::class => SeekerPolicy::class,
         Company::class => CompanyPolicy::class,
     ];
 

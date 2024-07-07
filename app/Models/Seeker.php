@@ -31,7 +31,7 @@ class Seeker extends Model
     }
     public function freelance_post()
     {
-        return $this->hasMany(Freelance_Post::class);
+        return $this->hasMany(FreelancePost::class);
     }
 
     public function skill()

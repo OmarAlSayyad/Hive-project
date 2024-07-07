@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Seeker_Language;
-use App\Http\Requests\StoreSeeker_LanguageRequest;
-use App\Http\Requests\UpdateSeeker_LanguageRequest;
+use App\Models\SeekerLanguage;
+use App\Http\Requests\StoreSeekerLanguageRequest;
+use App\Http\Requests\UpdateSeekerLanguageRequest;
 
 class SeekerLanguageController extends Controller
 {
@@ -27,7 +27,7 @@ class SeekerLanguageController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreSeeker_LanguageRequest $request)
+    public function store(StoreSeekerLanguageRequest $request)
     {
         //
     }
@@ -35,7 +35,7 @@ class SeekerLanguageController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Seeker_Language $seeker_Language)
+    public function show(SeekerLanguage $seekerLanguage)
     {
         //
     }
@@ -43,7 +43,7 @@ class SeekerLanguageController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Seeker_Language $seeker_Language)
+    public function edit(SeekerLanguage $seekerLanguage)
     {
         //
     }
@@ -51,7 +51,7 @@ class SeekerLanguageController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateSeeker_LanguageRequest $request, Seeker_Language $seeker_Language)
+    public function update(UpdateSeekerLanguageRequest $request, SeekerLanguage $seekerLanguage)
     {
         //
     }
@@ -59,7 +59,7 @@ class SeekerLanguageController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Seeker_Language $seeker_Language)
+    public function destroy(SeekerLanguage $seekerLanguage)
     {
         //
     }

@@ -9,7 +9,6 @@ class Skill extends Model
 {
     use HasFactory;
 
-    protected $table = 'skills';
 
     protected $fillable = [
         'name', 'category_id'
@@ -27,12 +26,12 @@ class Skill extends Model
 
     public function job_post()
     {
-        return $this->belongsToMany(Job_Post::class, 'required_skills');
+        return $this->belongsToMany(JobPost::class, 'required_skills','skill_id','job_post_id');
     }
 
     public function freelance_post()
     {
-        return $this->belongsToMany(Freelance_Post::class, 'required_skills');
+        return $this->belongsToMany(FreelancePost::class, 'required_skills');
     }
 
 }

@@ -19,7 +19,6 @@ return new class extends Migration
 
             $table->index('seeker_id');
             $table->index('skill_id');
-
         });
     }
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\FreelancePostController;
 use App\Http\Controllers\JobPostController;
@@ -23,8 +24,14 @@ Route::post('login',[UserController::class,'login'])->name('login')->name('login
 
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
-
+//add freelance post from seeker or company
     Route::post('/add_freelancePost', [FreelancePostController::class, 'store']);
+
+//get categories from seeker or company
+    Route::get('/get-all-categories', [CategoryController::class, 'index']);
+    Route::get('/get-category-by-id/{category}', [CategoryController::class, 'show']);
+
+    // logout from the app
     Route::post('logout', [UserController::class, 'logout']);
 
 
@@ -42,10 +49,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/companies',[CompanyController::class,'store'])->name('api.companies.store');
         Route::post('/companies/{company}',[CompanyController::class,'update'])->name('api.companies.update');
 
-        Route::get('/job_post',[JobPostController::class,'index'])->name('api.job_post.index');
-        Route::get('/job_post/{job}', [JobPostController::class, 'show'])->name('api.job_post.show');
-        Route::post('/job_post',[JobPostController::class,'store'])->name('api.job_post.store');
-        Route::post('/job_post/{job}',[JobPostController::class,'update'])->name('api.job_post.update');
+        Route::get('/job-post',[JobPostController::class,'index'])->name('api.job_post.index');
+        Route::get('/job-post/{jobPost}', [JobPostController::class, 'show'])->name('api.job_post.show');
+        Route::get('/job-post/company/{company}', [JobPostController::class, 'companyJobPost'])->name('api.job_post.companyJobPost');
+        Route::post('/job-post',[JobPostController::class,'store'])->name('api.job_post.store');
+        Route::post('/job-post/{jobPost}',[JobPostController::class,'update'])->name('api.job_post.update');
 
 
 

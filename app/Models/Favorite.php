@@ -24,11 +24,11 @@ class Favorite extends Model
     }
     public function job_post()
     {
-        return $this->belongsTo(Job_Post::class);
+        return $this->belongsTo(JobPost::class);
     }
     public function freelance_post()
     {
-        return $this->belongsTo(Freelance_Post::class);
+        return $this->belongsTo(FreelancePost::class);
     }
 
 

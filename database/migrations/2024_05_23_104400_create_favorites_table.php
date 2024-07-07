@@ -27,7 +27,7 @@ return new class extends Migration
             $table->index('company_id');
             $table->index('seeker_id');
             $table->index('job_post_id');
-            $table->index('freelance_post_id');
+           // $table->index('freelance_id');
         });
     }
 

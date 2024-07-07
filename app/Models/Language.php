@@ -22,10 +22,10 @@ class Language extends Model
     }
     public function job_post()
     {
-        return $this->belongsToMany(Job_Post::class,'required_languages');
+        return $this->belongsToMany(JobPost::class,'required_languages');
     }
     public function freelance_post()
     {
-        return $this->belongsToMany(Freelance_Post::class,'required_languages');
+        return $this->belongsToMany(FreelancePost::class,'required_languages');
     }
 }

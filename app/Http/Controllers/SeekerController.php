@@ -25,7 +25,7 @@ class SeekerController extends Controller
      */
     public function index()
     {
-        $seekers = Seeker::with('user','location', 'communication')->get();
+        $seekers = Seeker::with('user', 'location', 'communication')->get();
         return response($seekers);
     }
 
@@ -53,23 +53,20 @@ class SeekerController extends Controller
                 ]);
             }
             $existingSeeker = Seeker::where('user_id', $user->id)->first();
-            if ($existingSeeker )
-            {
+            if ($existingSeeker) {
                 return response()->json([
                     'data' => '',
                     'message' => 'User already exist',
                     'status' => 500,
                 ]);
             }
-            try
-            {
-                $location =Locations::create([
-                    'address' => $request->input('address',null),
-                    'country' => $request->input('country',null),
-                    'city' => $request->input('city',null),
+            try {
+                $location = Locations::create([
+                    'address' => $request->input('address', null),
+                    'country' => $request->input('country', null),
+                    'city' => $request->input('city', null),
                 ]);
-            } catch (Exception $e)
-            {
+            } catch (Exception $e) {
                 Log::error('Error creating location :' . $e->getMessage());
                 return response()->json([
                     'data' => '',
@@ -117,13 +114,13 @@ class SeekerController extends Controller
                     'user_id' => $user->id,
                     'communication_id' => $communication->id,
                     'location_id' => $location->id,
-                    'cv' =>$cvName,
-                    'level' =>$request->input('level','Beginner'),
+                    'cv' => $cvName,
+                    'level' => $request->input('level', 'Beginner'),
                     'picture' => $pictureName,
-                    'bio' => $request->input('bio',null),
-                    'gender' => $request->input('gender','Not_determined'),
-                    'hourly_rate' => $request->input('hourly_rate',null),
-                    'birth_date' => $request->input('birth_date',null),
+                    'bio' => $request->input('bio', null),
+                    'gender' => $request->input('gender', 'Not_determined'),
+                    'hourly_rate' => $request->input('hourly_rate', null),
+                    'birth_date' => $request->input('birth_date', null),
 
                 ]);
             } catch (Exception $e) {
@@ -131,9 +128,10 @@ class SeekerController extends Controller
                 return response()->json([
                     'data' => '',
                     'message' => 'An error occurred while creating the seeker',
-                    'status' =>500 ,
-                ],500);
-            } try {
+                    'status' => 500,
+                ], 500);
+            }
+            try {
                 $wallet1 = Wallet::create([
                     'seeker_id' => $seeker->id,
                     'balance' => $request->input('balance', 0),
@@ -150,17 +148,17 @@ class SeekerController extends Controller
                     'data' => '',
                     'message' => 'An error occurred while creating the Wallet',
                     'status' => 500
-                ],500);
+                ], 500);
             }
             return response()->json([
-                'data' =>  new SeekerResource($seeker->load(['user', 'location', 'communication'])),
+                'data' => new SeekerResource($seeker->load(['user', 'location', 'communication'])),
                 'message' => 'seeker registered successfully',
                 'status' => 200,
             ]);
         } catch (ModelNotFoundException $e) {
             return response()->json([
                 'data' => '',
-                'message' => ' User model not found',
+                'message' => $e->getMessage(),
                 'status' => 404,
             ]);
         } catch (Exception $e) {
@@ -221,7 +219,7 @@ class SeekerController extends Controller
                 }
 
                 $seeker->picture = $pictureName;
-
+            }
                 $cv = $request->file('cv');
                 if ($cv) {
                     $cvName = Str::random(32) . "." . $cv->getClientOriginalExtension();
@@ -240,14 +238,14 @@ class SeekerController extends Controller
                     'message' => 'Seeker updated successfully',
                     'status' => 200
                 ], 200);
-            }
-        }catch (AuthorizationException $e) {
-                return response()->json([
-                    'success' => false,
-                    'message' => $e->getMessage(),
-                ], 403);
-            }
+            } catch (AuthorizationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 403);
         }
+    }
+
 
 
 

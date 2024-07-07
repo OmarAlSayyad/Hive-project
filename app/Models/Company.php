@@ -34,11 +34,11 @@ class Company extends Model
 
     public function job_post()
     {
-        return $this->hasMany(Job_Post::class);
+        return $this->hasMany(JobPost::class);
     }
     public function freelance_post()
     {
-        return $this->hasMany(Freelance_Post::class);
+        return $this->hasMany(FreelancePost::class);
     }
 
     public function interview()

@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\Seeker_Language;
+use App\Models\SeekerLanguage;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -19,7 +19,7 @@ class SeekerLanguagePolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Seeker_Language $seekerLanguage): bool
+    public function view(User $user, SeekerLanguage $seekerLanguage): bool
     {
         //
     }
@@ -35,7 +35,7 @@ class SeekerLanguagePolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Seeker_Language $seekerLanguage): bool
+    public function update(User $user, SeekerLanguage $seekerLanguage): bool
     {
         //
     }
@@ -43,7 +43,7 @@ class SeekerLanguagePolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Seeker_Language $seekerLanguage): bool
+    public function delete(User $user, SeekerLanguage $seekerLanguage): bool
     {
         //
     }
@@ -51,7 +51,7 @@ class SeekerLanguagePolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Seeker_Language $seekerLanguage): bool
+    public function restore(User $user, SeekerLanguage $seekerLanguage): bool
     {
         //
     }
@@ -59,7 +59,7 @@ class SeekerLanguagePolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Seeker_Language $seekerLanguage): bool
+    public function forceDelete(User $user, SeekerLanguage $seekerLanguage): bool
     {
         //
     }

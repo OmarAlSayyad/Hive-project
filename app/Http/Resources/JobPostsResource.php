@@ -33,9 +33,9 @@ class JobPostsResource extends JsonResource
             'updated_at' => $this->updated_at,
             'experience_years' => $this->experience_years,
 
-            'company' => new CompanyResource($this->company),
-            'category' => new CategoryResource($this->category),
-            'skill' => new SkillsResource($this->skill),
+            'company' => new CompanyResource($this->whenLoaded('company')),
+            'category' => new CategoryResource($this->whenLoaded('category')),
+            'skill' => SkillsResource::collection($this->whenLoaded('skill')),
 
         ];
     }

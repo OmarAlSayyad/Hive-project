@@ -28,7 +28,6 @@ return new class extends Migration
             $table->index('company_id');
             $table->index('seeker_id');
             $table->index('category_id');
-
         });
     }
 

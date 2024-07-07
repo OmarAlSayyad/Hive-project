@@ -13,7 +13,7 @@ class StoreJobPostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -43,6 +43,8 @@ class StoreJobPostRequest extends FormRequest
             'min_salary'=>'required|numeric',
             'max_salary'=>'required|numeric',
 
+            'skill_ids' => 'required|array',
+            'skill_ids.*' => 'exists:skills,id'
 
 
         ];

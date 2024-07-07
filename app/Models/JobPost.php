@@ -25,7 +25,7 @@ class JobPost extends Model
 
     public function skill()
     {
-        return $this->belongsToMany(Skill::class, 'required_skills');
+        return $this->belongsToMany(Skill::class, 'required_skills','job_post_id','skill_id');
     }
 
     public function language()

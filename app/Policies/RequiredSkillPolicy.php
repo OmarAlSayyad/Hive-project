@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\JobPost;
+use App\Models\RequiredSkill;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class JobPostPolicy
+class RequiredSkillPolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -19,7 +19,7 @@ class JobPostPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, JobPost $jobPost): bool
+    public function view(User $user, RequiredSkill $requiredSkill): bool
     {
         //
     }
@@ -35,7 +35,7 @@ class JobPostPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, JobPost $jobPost): bool
+    public function update(User $user, RequiredSkill $requiredSkill): bool
     {
         //
     }
@@ -43,7 +43,7 @@ class JobPostPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, JobPost $jobPost): bool
+    public function delete(User $user, RequiredSkill $requiredSkill): bool
     {
         //
     }
@@ -51,7 +51,7 @@ class JobPostPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, JobPost $jobPost): bool
+    public function restore(User $user, RequiredSkill $requiredSkill): bool
     {
         //
     }
@@ -59,7 +59,7 @@ class JobPostPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, JobPost $jobPost): bool
+    public function forceDelete(User $user, RequiredSkill $requiredSkill): bool
     {
         //
     }
