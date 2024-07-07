@@ -23,10 +23,16 @@ class SeekerPolicy
      */
     public function view(User $user, Seeker $seeker)
     {
-        if ($user->id !== $seeker->user_id) {
-            return $this->deny('You do not have permission to show this freelance posts.');
+        $company = $user->company;
+        if (
+            ($seeker && $user->id === $seeker->user_id)||
+        ($company && $user->id === $company->user_id)
+        )
+        {
+            return true;
         }
-        return true;
+        return $this->deny('You do not have permission to show this freelance posts.');
+
     }
 
     /**
