@@ -68,6 +68,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/job-post/company/{company}', [JobPostController::class, 'companyJobPost'])->name('api.job_post.companyJobPost');
         Route::post('/job-post',[JobPostController::class,'store'])->name('api.job_post.store');
         Route::post('/job-post/{jobPost}',[JobPostController::class,'update'])->name('api.job_post.update');
+        Route::delete('/job-post/{jobPost}',[JobPostController::class,'destroy'])->name('api.job_post.destroy');
+
+
+        Route::get('/freelance_post',[FreelancePostController::class,'index'])->name('api.freelance_post.index');
+        Route::get('/freelance_post/{freelancePost}', [FreelancePostController::class, 'show'])->name('api.freelance_post.show');
+        Route::post('/freelance_post', [FreelancePostController::class, 'store'])->name('api.freelance_post.store');
+        Route::post('/freelance_post/{freelancePost}',[FreelancePostController::class,'update'])->name('api.freelance_post.update');
 
 
 

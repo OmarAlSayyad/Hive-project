@@ -24,7 +24,6 @@ class UpdateJobPostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'company_id'=>'required|exists:companies,id',
             'category_id'=>'required|exists:categories,id',
 
             'title'=>'required|string',

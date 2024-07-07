@@ -2,16 +2,14 @@
 
 namespace App\Policies;
 
-use App\Models\Company;
+use App\Models\JobPost;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Auth\Access\Response;
 
-
-class CompanyPolicy
+class JobPostPolicy
 {
     use HandlesAuthorization;
-
 
     /**
      * Determine whether the user can view any models.
@@ -24,7 +22,7 @@ class CompanyPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Company $company): bool
+    public function view(User $user, JobPost $jobPost): bool
     {
         //
     }
@@ -38,25 +36,25 @@ class CompanyPolicy
     }
 
     /**
-     * Determine whether the user can update the company.
-     *
+     * Determine whether the user can update the model.
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Company  $company
+     * @param  \App\Models\JobPost  $jobPost
      * @return \Illuminate\Auth\Access\Response
      */
-    public function update(User $user, Company $company):Response
+    public function update(User $user, JobPost $jobPost):Response
     {
-        return $user->id === $company->user_id
+        if ($user->company === null) {
+            return Response::deny('You do not have a company associated with your account.');
+        }
+        return $user->company->id === $jobPost->company_id
             ? Response::allow()
-            : Response::deny('You do not own this company profile .');
-
-
+            : Response::deny('You do not have permission to update this post.');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Company $company): bool
+    public function delete(User $user, JobPost $jobPost): bool
     {
         //
     }
@@ -64,7 +62,7 @@ class CompanyPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Company $company): bool
+    public function restore(User $user, JobPost $jobPost): bool
     {
         //
     }
@@ -72,8 +70,8 @@ class CompanyPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Company $company): bool
+    public function forceDelete(User $user, JobPost $jobPost): bool
     {
-
+        //
     }
 }

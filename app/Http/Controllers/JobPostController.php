@@ -10,6 +10,8 @@ use App\Http\Requests\StoreJobPostRequest;
 use App\Http\Requests\UpdateJobPostRequest;
 use App\Models\RequiredSkill;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 
 class JobPostController extends Controller
@@ -134,9 +136,13 @@ class JobPostController extends Controller
      */
     public function update(UpdateJobPostRequest $request, JobPost $jobPost)
     {
+        $jobPost = JobPost::findOrFail($jobPost->id);
+
         try {
 
-            $jobPost->update($request->only(['company_id', 'category_id', 'title', 'description',
+            $this->authorize('update', $jobPost);
+
+            $jobPost->update($request->only(['category_id', 'title', 'description',
             'job_requirement', 'address', 'gender', 'min_age', 'max_age', 'scientific_level', 'job_type',
             'experience_years', 'min_salary', 'max_salary']));
 
@@ -149,13 +155,11 @@ class JobPostController extends Controller
                     $jobPost->skill()->attach($skill_id);
                 }
             }
-        } catch (Exception $e) {
-            Log::error('Error updating job post :' . $e->getMessage());
+        } catch (AuthorizationException $e) {
             return response()->json([
-                'data' => '',
-                'message' => 'An error occurred while updating the job post ',
-                'status' => 500,
-            ], 500);
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 403);
         }
 
         return response()->json([
@@ -171,6 +175,27 @@ class JobPostController extends Controller
      */
     public function destroy(JobPost $jobPost)
     {
-        //
+        try {
+
+            $jobPost->skill()->detach();
+
+            $jobPost->delete();
+
+            return response()->json([
+                'data' => '',
+                'message' => 'Job post deleted successfully',
+                'status' => 200,
+            ], 200);
+
+        } catch (Exception $e) {
+            Log::error('Error deleting job post: ' . $e->getMessage());
+            return response()->json([
+                'data' => '',
+                'message' => 'An error occurred while deleting the job post',
+                'status' => 500,
+            ], 500);
+        }
     }
+
+
 }
