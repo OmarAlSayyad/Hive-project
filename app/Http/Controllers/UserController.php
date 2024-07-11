@@ -48,7 +48,7 @@ class UserController extends Controller
             'data'=>'',
             'message'=>'Error occured while trying to create new account',
             'status' => 400,
-        ]);
+        ],400);
     }
     public function login(Request $request)
     {

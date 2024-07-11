@@ -43,13 +43,13 @@ class UpdateFreelancePostRequest extends FormRequest
             'skill_ids.*.exists' => 'The selected skill is invalid.',
         ];
     }
-//    protected function failedValidation(Validator $validator)
-//    {
-//        $errors = $validator->errors();
-//        $response = response()->json([
-//            'message' => 'Invalid data send',
-//            'details' => $errors->messages(),
-//        ], 422);
-//        throw new HttpResponseException($response);
-//    }
+   protected function failedValidation(Validator $validator)
+   {
+       $errors = $validator->errors();
+       $response = response()->json([
+           'message' => 'Invalid data send',
+           'details' => $errors->messages(),
+       ], 422);
+       throw new HttpResponseException($response);
+   }
 }

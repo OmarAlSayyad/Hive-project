@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class StoreUserRequest extends FormRequest
 {
@@ -28,5 +30,14 @@ class StoreUserRequest extends FormRequest
             'password_confirmation' => 'required|same:password',
             'role'=>'not_in:owner',
         ];
+    }
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = $validator->errors();
+        $response = response()->json([
+            'message' => 'Invalid data send',
+            'details' => $errors->messages(),
+        ], 422);
+        throw new HttpResponseException($response);
     }
 }
