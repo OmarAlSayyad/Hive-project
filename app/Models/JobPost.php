@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class JobPost extends Model
 {
     use HasFactory;
+
+   // protected $with = ['category','skill'];
+
     protected $fillable = [
         'company_id','category_id',  'title', 'description', 'job_requirement','address','gender','min_age','max_age','scientific_level',
         'job_type','experience_years','min_salary','max_salary','status'

@@ -26,7 +26,6 @@ class FreelancePostsResource extends JsonResource
             'min_budget' => $this->min_budget,
             'max_budget' => $this->max_budget,
 
-            'seeker' => new SeekerResource($this->seeker),
             'category' => new CategoryResource($this->whenLoaded('category')),
             'skill' => SkillsResource::collection($this->whenLoaded('skill')),
         ];

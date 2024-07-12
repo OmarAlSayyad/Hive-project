@@ -20,7 +20,7 @@ class FreelancePostController extends Controller
      */
     public function index()
     {
-        $freelancePosts = FreelancePost::with('seeker','category','skill')->get();
+        $freelancePosts = FreelancePost::with('category','skill')->get();
         return FreelancePostsResource::collection($freelancePosts);
     }
 
@@ -38,14 +38,7 @@ class FreelancePostController extends Controller
     public function store(StoreFreelancePostRequest $request)
     {
         try {
-        $validated = $request->validated();
-        if (!$validated) {
-            return response()->json([
-                'data' => '',
-                'message' => $request->errors()->all(),
-                'status' => 422,
-            ]);
-        }
+
             $freelancepost = FreelancePost::create([
                 'seeker_id' => $request->seeker_id,
                 'company_id' => $request->company_id,
@@ -73,7 +66,7 @@ class FreelancePostController extends Controller
          'status' => 500,
         ], 500);
          }
-        $freelancepost->load(['seeker', 'category', 'skill']);
+        $freelancepost->load([ 'category', 'skill']);
         return response()->json([
             'data' => new FreelancePostsResource($freelancepost),
             'message' => ' freelance post created successfully',
@@ -86,7 +79,7 @@ class FreelancePostController extends Controller
      */
     public function show(FreelancePost $freelancePost)
     {
-        return new FreelancePostsResource($freelancePost->load(['seeker','category','skill']));
+        return new FreelancePostsResource($freelancePost->load(['category','skill']));
     }
 
     public function getFreelancePosts(Seeker $seeker)
@@ -185,7 +178,7 @@ class FreelancePostController extends Controller
            }
 
         return response()->json([
-            'data' => new FreelancePostsResource( $freelancePost->load(['seeker', 'category', 'skill'])),
+            'data' => new FreelancePostsResource( $freelancePost->load(['category', 'skill'])),
             'message' => ' freelance post updated successfully',
             'status' => 200,
         ],200);

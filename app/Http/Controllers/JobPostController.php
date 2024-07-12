@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\CompanyResource;
+use App\Http\Resources\FreelancePostsResource;
 use App\Http\Resources\JobPostsResource;
 use App\Models\Company;
+use App\Models\FreelancePost;
 use App\Models\JobPost;
 use App\Http\Requests\StoreJobPostRequest;
 use App\Http\Requests\UpdateJobPostRequest;
@@ -12,6 +14,7 @@ use App\Models\RequiredSkill;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 
 class JobPostController extends Controller
@@ -21,8 +24,8 @@ class JobPostController extends Controller
      */
     public function index()
     {
-        $jobs = JobPost::all();
-        return JobPostsResource::collection($jobs);
+        $jobPosts = JobPost::with('category','skill')->get();
+        return JobPostsResource::collection($jobPosts);
     }
 
     public function companyJobPost(Company $company)
@@ -107,8 +110,10 @@ class JobPostController extends Controller
                 'status' => 500,
             ], 500);
         }
+
+        $jobPost->load(['category', 'skill']);
         return response()->json([
-            'data' =>  new JobPostsResource($jobPost->load(['company','category','skill'])),
+            'data' =>  JobPostsResource::collection(collect([$jobPost])),
             'message' => ' job post created successfully',
             'status' => 200,
         ],200);
@@ -118,9 +123,14 @@ class JobPostController extends Controller
     /**
      * Display the specified resource.
      */
+//    public function show(JobPost $jobPost)
+//    {
+//        return new JobPostsResource($jobPost->load([ 'category', 'skill']));
+//    }
     public function show(JobPost $jobPost)
     {
-        return new JobPostsResource($jobPost->load(['company', 'category', 'skill']));
+        $jobPost->load(['category', 'skill']);
+        return JobPostsResource::collection(collect([$jobPost]));
     }
 
     /**
@@ -161,9 +171,9 @@ class JobPostController extends Controller
                 'message' => $e->getMessage(),
             ], 403);
         }
-
+        $jobPost->load(['category', 'skill']);
         return response()->json([
-            'data' => new JobPostsResource($jobPost->load(['company', 'category', 'skill'])),
+            'data' => JobPostsResource::collection(collect([$jobPost])),
             'message' => 'Job post updated successfully',
             'status' => 200,
         ], 200);
