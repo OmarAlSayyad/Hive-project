@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\FreelancePostsResource;
+use App\Models\Company;
 use App\Models\FreelancePost;
 use App\Http\Requests\StoreFreelancePostRequest;
 use App\Http\Requests\UpdateFreelancePostRequest;
@@ -11,6 +12,7 @@ use App\Models\RequiredSkill;
 use App\Models\Seeker;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class FreelancePostController extends Controller
@@ -38,17 +40,34 @@ class FreelancePostController extends Controller
     public function store(StoreFreelancePostRequest $request)
     {
         try {
+            $user = Auth::user();
+            $seeker = Seeker::where('user_id', $user->id)->first();
+            $company=Company::where('user_id', $user->id)->first();
 
-            $freelancepost = FreelancePost::create([
-                'seeker_id' => $request->seeker_id,
-                'company_id' => $request->company_id,
-                'category_id' => $request->category_id,
-                'title' => $request->title,
-                'description' => $request->description,
-                'delivery_date' => $request->delivery_date,
-                'min_budget' => $request->min_budget,
-                'max_budget' => $request->max_budget,
-            ]);
+            if(!$company){
+                $freelancepost = FreelancePost::create([
+                    'seeker_id' => $seeker->id,
+                    'category_id' => $request->category_id,
+                    'title' => $request->title,
+                    'description' => $request->description,
+                    'delivery_date' => $request->delivery_date,
+                    'min_budget' => $request->min_budget,
+                    'max_budget' => $request->max_budget,
+                ]);
+            }
+            if(!$seeker){
+                $freelancepost = FreelancePost::create([
+                    'company_id' => $company->id,
+                    'category_id' => $request->category_id,
+                    'title' => $request->title,
+                    'description' => $request->description,
+                    'delivery_date' => $request->delivery_date,
+                    'min_budget' => $request->min_budget,
+                    'max_budget' => $request->max_budget,
+                ]);
+            }
+
+
 
             if ($request->has('skill_ids') && is_array($request->skill_ids)) {
                 foreach ($request->skill_ids as $skill_id) {
@@ -68,7 +87,7 @@ class FreelancePostController extends Controller
          }
         $freelancepost->load([ 'category', 'skill']);
         return response()->json([
-            'data' => new FreelancePostsResource($freelancepost),
+            'data' =>  FreelancePostsResource::collection(collect([$freelancepost])),
             'message' => ' freelance post created successfully',
             'status' => 200,
         ],200);
@@ -79,21 +98,19 @@ class FreelancePostController extends Controller
      */
     public function show(FreelancePost $freelancePost)
     {
-        return new FreelancePostsResource($freelancePost->load(['category','skill']));
+        $freelancePost->load(['category','skill']);
+        return  FreelancePostsResource::collection(collect([$freelancePost]));
     }
 
-    public function getFreelancePosts(Seeker $seeker)
+    public function getFreelancePosts()
     {
         try {
-            try {
-                $this->authorize('view', $seeker);
+            $user = Auth::user();
+            $seeker = Seeker::where('user_id', $user->id)->first();
 
-            }catch (AuthorizationException $e){
-                return response()->json([
-                    'success' => false,
-                    'message' => $e->getMessage(),
-                ], 403);
-            }
+            // $this->authorize('view', $seeker);
+
+
             $freelancePost = FreelancePost::with(['category', 'skill'])
                 ->where('seeker_id', $seeker->id)
                 ->get();
@@ -110,6 +127,42 @@ class FreelancePostController extends Controller
                 'message' => 'Freelance posts retrieved successfully',
                 'status' => 200,
             ], 200);
+
+        } catch (Exception $e) {
+            Log::error('Error retrieving seeker freelance posts: ' . $e->getMessage());
+            return response()->json([
+                'data' => [],
+                'message' => 'An error occurred while retrieving freelance posts',
+                'status' => 500,
+            ], 500);
+        }
+    }
+
+
+
+    public function getFreelancePostsById(Seeker $seeker)
+    {
+        try {
+            // $this->authorize('view', $seeker);
+
+
+            $freelancePost = FreelancePost::with(['category', 'skill'])
+                ->where('seeker_id', $seeker->id)
+                ->get();
+            if ($freelancePost->isEmpty()) {
+                return response()->json([
+                    'data' => [],
+                    'message' => 'No freelance posts found for this seeker',
+                    'status' => 404,
+                ], 404);
+            }
+
+            return response()->json([
+                'data' => FreelancePostsResource::collection($freelancePost),
+                'message' => 'Freelance posts retrieved successfully',
+                'status' => 200,
+            ], 200);
+
         } catch (Exception $e) {
             Log::error('Error retrieving seeker freelance posts: ' . $e->getMessage());
             return response()->json([
@@ -135,54 +188,53 @@ class FreelancePostController extends Controller
     public function update(UpdateFreelancePostRequest $request, FreelancePost $freelancePost)
     {
 
-      $freelancePost = FreelancePost::findOrFail($freelancePost->id);
-      try {
-              try {
-                  $this->authorize('update', $freelancePost);
+        $freelancePost = FreelancePost::findOrFail($freelancePost->id);
+        try {
+                $this->authorize('update', $freelancePost);
 
-              }catch (AuthorizationException $e){
-                  return response()->json([
-                      'success' => false,
-                      'message' => $e->getMessage(),
-                  ], 403);
-              }
 
-        $validated = $request->validated();
-        if (!$validated) {
-            return response()->json([
-                'data' => '',
-                'message' => $request->errors()->all(),
-                'status' => 422,
-            ]);
-        }
+                $validated = $request->validated();
+                if (!$validated) {
+                    return response()->json([
+                        'data' => '',
+                        'message' => $request->errors()->all(),
+                        'status' => 422,
+                    ]);
+                }
 
-        $freelancePost->update($request->except(['seeker_id', 'company_id']));
+                $freelancePost->update($request->except(['seeker_id', 'company_id']));
 
-        if ($request->has('skill_ids') && is_array($request->skill_ids)) {
+                if ($request->has('skill_ids') && is_array($request->skill_ids)) {
 
-            $freelancePost->skill()->detach();
+                    $freelancePost->skill()->detach();
 
-            foreach ($request->skill_ids as $skill_id) {
-                $freelancePost->skill()->attach($skill_id);
+                    foreach ($request->skill_ids as $skill_id) {
+                        $freelancePost->skill()->attach($skill_id);
+                    }
+                }
+                $freelancePost->save();
+
+            } catch (AuthorizationException $e) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $e->getMessage(),
+                ], 403);
+            } catch (Exception $e) {
+                Log::error('Error while updating  freelance :' . $e->getMessage());
+                return response()->json([
+                    'data' => '',
+                    'message' => 'An error occurred while update the freelance post',
+                    'status' => 500,
+                ], 500);
             }
+        $freelancePost->load(['category', 'skill']);
+            return response()->json([
+                'data' => FreelancePostsResource::collection(collect([$freelancePost])),
+                'message' => ' freelance post updated successfully',
+                'status' => 200,
+            ], 200);
         }
-        $freelancePost->save();
 
-        }catch (Exception $e) {
-               Log::error('Error while updating  freelance :' . $e->getMessage());
-               return response()->json([
-                   'data' => '',
-                   'message' => 'An error occurred while update the freelance post',
-                   'status' => 500,
-               ], 500);
-           }
-
-        return response()->json([
-            'data' => new FreelancePostsResource( $freelancePost->load(['category', 'skill'])),
-            'message' => ' freelance post updated successfully',
-            'status' => 200,
-        ],200);
-    }
 
     /**
      * Remove the specified resource from storage.

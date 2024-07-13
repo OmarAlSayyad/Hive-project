@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('freelance_posts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id')->nullable()->constrained('companies');
-            $table->foreignId('seeker_id')->nullable()->constrained('seekers');
+            $table->foreignId('company_id')->nullable()->constrained('companies')->cascadeOnDelete();
+            $table->foreignId('seeker_id')->nullable()->constrained('seekers')->cascadeOnDelete();
             $table->foreignId('category_id')->constrained('categories');
 
             $table->string('title');

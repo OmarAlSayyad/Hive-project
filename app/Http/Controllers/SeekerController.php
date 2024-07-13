@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\SeekerResource;
 use App\Models\Communication;
+use App\Models\FreelancePost;
 use App\Models\Locations;
 use App\Models\Seeker;
 use App\Http\Requests\StoreSeekerRequest;
@@ -26,7 +27,31 @@ class SeekerController extends Controller
     public function index()
     {
         $seekers = Seeker::with('user', 'location', 'communication')->get();
-        return response($seekers);
+        return SeekerResource::collection($seekers);
+    }
+
+    public function getMySeeker()
+    {
+        try {
+            $user = Auth::user();
+            $seeker = Seeker::where('user_id', $user->id)->first();
+
+            if (!$seeker) {
+                return response()->json([
+                    'message' => 'Seeker profile not found for the current user',
+                    'status' => 404
+                ], 404);
+            }
+            $seeker->load(['user', 'location', 'communication']);
+            return SeekerResource::collection(collect([$seeker]));
+        } catch (\Exception $e) {
+            Log::error('Error retrieving seeker: ' . $e->getMessage());
+
+            return response()->json([
+                'message' => 'Failed to retrieve seeker',
+                'status' => 500
+            ], 500);
+        }
     }
 
     /**
@@ -150,8 +175,9 @@ class SeekerController extends Controller
                     'status' => 500
                 ], 500);
             }
+            $seeker->load(['user', 'location', 'communication']);
             return response()->json([
-                'data' => new SeekerResource($seeker->load(['user', 'location', 'communication'])),
+                'data' =>  SeekerResource::collection(collect([$seeker])),
                 'message' => 'seeker registered successfully',
                 'status' => 200,
             ]);
@@ -177,7 +203,8 @@ class SeekerController extends Controller
      */
     public function show(Seeker $seeker)
     {
-        return new SeekerResource($seeker->load(['user', 'location', 'communication']));
+        $seeker->load(['user', 'location', 'communication']);
+        return SeekerResource::collection(collect([$seeker]));
 
     }
 
@@ -192,10 +219,14 @@ class SeekerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateSeekerRequest $request, Seeker $seeker)
+    public function update(UpdateSeekerRequest $request)
     {
 
-        $seeker = Seeker::findOrFail($seeker->id);
+       // $seeker = Seeker::findOrFail($seeker->id);
+
+        $user = Auth::user();
+        $seeker = Seeker::where('user_id', $user->id)->first();
+
         try {
             $this->authorize('update', $seeker);
 
@@ -232,9 +263,9 @@ class SeekerController extends Controller
                     $seeker->cv = $cvName;
                     $seeker->save();
                 }
-
+            $seeker->load(['user', 'location', 'communication']);
                 return response()->json([
-                    'data' => new SeekerResource($seeker->load(['user', 'location', 'communication'])),
+                    'data' => SeekerResource::collection(collect([$seeker])),
                     'message' => 'Seeker updated successfully',
                     'status' => 200
                 ], 200);
@@ -242,6 +273,7 @@ class SeekerController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
+                'status' => 403,
             ], 403);
         }
     }
@@ -254,8 +286,56 @@ class SeekerController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Seeker $seeker)
+    public function destroy()
     {
-        //
+        try {
+
+            //$this->authorize('delete', $seeker);
+            $user = Auth::user();
+            $seeker = Seeker::where('user_id', $user->id)->first();
+
+            $freelancePosts = FreelancePost::
+                where('seeker_id', $seeker->id)
+                ->get();
+            foreach ($freelancePosts as $freelancePost){
+
+                $freelancePost->skill()->detach();
+                $freelancePost->delete();
+
+
+            }
+
+            if ($seeker->picture) {
+                Storage::disk('public')->delete($seeker->picture);
+            }
+
+            $seeker->wallet()->delete();
+
+            $seeker->location()->delete();
+
+            $seeker->communication()->delete();
+
+            $seeker->delete();
+
+            return response()->json([
+                'data' =>'',
+                'message' => 'Seeker profile deleted successfully',
+                'status' => 200
+            ], 200);
+        } catch (AuthorizationException $e) {
+            return response()->json([
+                'data' =>'',
+                'message' => $e->getMessage(),
+                'status' => 403
+            ], 403);
+        } catch (\Exception $e) {
+            return response()->json([
+                'data' =>'',
+                'message' => 'Failed to delete this seeker profile. ' . $e->getMessage(),
+                'status' => 500
+            ], 500);
+        }
+
     }
+
 }

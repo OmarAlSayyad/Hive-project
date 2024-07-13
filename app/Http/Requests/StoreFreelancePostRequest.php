@@ -24,8 +24,8 @@ class StoreFreelancePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'seeker_id'=>'nullable|exists:seekers,id',
-            'company_id'=>'nullable|exists:companies,id',
+           // 'seeker_id'=>'nullable|exists:seekers,id',
+           // 'company_id'=>'nullable|exists:companies,id',
             'category_id'=>'required|exists:categories,id',
             'title'=>'required|string',
             'description'=>'required|string',

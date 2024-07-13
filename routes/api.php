@@ -36,8 +36,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/seekers', [SeekerController::class, 'index'])->name('api.seekers.index');
     //show seeker by id
     Route::get('/seekers/{seeker}', [SeekerController::class, 'show'])->name('api.seekers.show');
-    // show all seeker posts
-    Route::get('/seeker_post/{seeker}',[FreelancePostController::class,'getFreelancePosts'])->name('api.freelance_post.getFreelancePosts');
 
 
     // company
@@ -50,6 +48,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/freelance_post',[FreelancePostController::class,'index'])->name('api.freelance_post.index');
     //show  freelance post by id
     Route::get('/freelance_post/{freelancePost}', [FreelancePostController::class, 'show'])->name('api.freelance_post.show');
+    // show all seeker posts by id
+    Route::get('/seeker_posts_by_id/{seeker}',[FreelancePostController::class,'getFreelancePostsById'])->name('api.freelance_post.getFreelancePostsById');
+
 
 
     Route::get('/job-post',[JobPostController::class,'index'])->name('api.job_post.index');
@@ -59,12 +60,19 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::middleware([SeekerMiddleware::class])->group(function () {
 
 
+
+        //get seeker profile
+        Route::get('/get_seeker_profile',[SeekerController::class,'getMySeeker'])->name('api.seekers.getMySeeker');
         //create seeker profile
         Route::post('/seekers', [SeekerController::class, 'store'])->name('api.seekers.store');
         //modify seeker profile
-        Route::post('/seekers/{seeker}',[SeekerController::class,'update'])->name('api.seekers.update');
+        Route::post('/update_seeker_profile',[SeekerController::class,'update'])->name('api.seekers.update');
+        //delete seeker profile
+       Route::delete('/seekers',[SeekerController::class,'destroy'])->name('api.seekers.destroy');
 
 
+        // show all seeker posts
+        Route::get('/seeker_posts',[FreelancePostController::class,'getFreelancePosts'])->name('api.freelance_post.getFreelancePosts');
         //add freelance post from seeker
         Route::post('/freelance_post', [FreelancePostController::class, 'store'])->name('api.freelance_post.store');
         //modify the freelance post
