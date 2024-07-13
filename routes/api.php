@@ -83,17 +83,22 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
     Route::middleware([CompanyMiddleware::class])->group(function (){
 
-        Route::get('/get-my-profile-company',[CompanyController::class,'getMyCompany'])->name('api.companies.getMyCompany');
+        Route::get('/my-profile-company',[CompanyController::class,'getMyCompany'])->name('api.companies.getMyCompany');
         Route::post('/companies',[CompanyController::class,'store'])->name('api.companies.store');
-        Route::post('/companies/{company}',[CompanyController::class,'update'])->name('api.companies.update');
+        Route::post('/companies/update',[CompanyController::class,'update'])->name('api.companies.update');
         Route::delete('/companies/{company}',[CompanyController::class,'destroy'])->name('api.companies.destroy');
 
 
+
+        Route::get('/my-job-posts',[JobPostController::class,'getMyJobPosts'])->name('api.companies.getMyJobPosts');
 
         Route::post('/job-post',[JobPostController::class,'store'])->name('api.job-post.store');
         Route::post('/job-post/{jobPost}',[JobPostController::class,'update'])->name('api.job-post.update');
         Route::delete('/job-post/{jobPost}',[JobPostController::class,'destroy'])->name('api.job-post.destroy');
 
+
+
+        Route::get('/my-freelance-posts',[FreelancePostController::class,'getFreelancePosts'])->name('api.companies.getFreelancePosts');
 
         Route::post('/company/freelance-post', [FreelancePostController::class,'store'])->name('api.freelance-post.store');
         Route::post('/company/freelance-post/{freelancePost}',[FreelancePostController::class,'update'])->name('api.freelance-post.update');

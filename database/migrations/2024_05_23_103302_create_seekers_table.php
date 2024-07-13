@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('communication_id')->constrained('communications')->onDelete('cascade');
-            $table->foreignId('location_id')->constrained('locations')->onDelete('cascade');
+            $table->foreignId('communication_id')->constrained('communications')->cascadeOnDelete();
+            $table->foreignId('location_id')->constrained('locations')->cascadeOnDelete();
 
             $table->enum('rating',[1,2,3,4,5])->default(null);
             $table->string('cv')->nullable();

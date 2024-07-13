@@ -89,7 +89,7 @@ class CompanyController extends Controller
             {
                 return response()->json([
                     'data' => '',
-                    'message' => 'User already exist',
+                    'message' => 'Company already exist',
                     'status' => 500,
                 ],500);
             }
@@ -210,10 +210,11 @@ class CompanyController extends Controller
      */
 
 
-    public function update(UpdateCompanyRequest $request, Company $company)
+    public function update(UpdateCompanyRequest $request)
     {
 
-        $company = Company::findOrFail($company->id);
+        $user = Auth::user();
+        $company= Company::where('user_id', $user->id)->first();
 
         try {
             $this->authorize('update', $company);

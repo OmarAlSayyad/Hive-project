@@ -107,17 +107,24 @@ class FreelancePostController extends Controller
         try {
             $user = Auth::user();
             $seeker = Seeker::where('user_id', $user->id)->first();
+            $company=Company::where('user_id', $user->id)->first();
 
             // $this->authorize('view', $seeker);
+            if ($seeker){
+                $freelancePost = FreelancePost::with(['category', 'skill'])
+                    ->where('seeker_id', $seeker->id)
+                    ->get();
+            }
+            if ($company){
+                $freelancePost = FreelancePost::with(['category', 'skill'])
+                    ->where('company_id', $company->id)
+                    ->get();
+            }
 
-
-            $freelancePost = FreelancePost::with(['category', 'skill'])
-                ->where('seeker_id', $seeker->id)
-                ->get();
             if ($freelancePost->isEmpty()) {
                 return response()->json([
                     'data' => [],
-                    'message' => 'No freelance posts found for this seeker',
+                    'message' => 'No freelance posts was found ',
                     'status' => 404,
                 ], 404);
             }
