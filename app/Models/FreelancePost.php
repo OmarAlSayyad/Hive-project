@@ -59,4 +59,10 @@ class FreelancePost extends Model
     {
         return $this->belongsTo(Category::class);
     }
+
+    public function applicants_freelance_post(){
+        return $this->hasMany(ApplicantsFreelancePost::class);
+    }
+
+
 }

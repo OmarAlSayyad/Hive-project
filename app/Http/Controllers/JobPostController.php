@@ -145,14 +145,16 @@ class JobPostController extends Controller
                 'message' => 'An error occurred while creating the job post ',
                 'status' => 500,
             ], 500);
+        } finally {
+            $jobPost->load(['category', 'skill']);
+            return response()->json([
+                'data' =>  JobPostsResource::collection(collect([$jobPost])),
+                'message' => ' job post created successfully',
+                'status' => 200,
+            ],200);
         }
 
-        $jobPost->load(['category', 'skill']);
-        return response()->json([
-            'data' =>  JobPostsResource::collection(collect([$jobPost])),
-            'message' => ' job post created successfully',
-            'status' => 200,
-        ],200);
+
 
     }
 

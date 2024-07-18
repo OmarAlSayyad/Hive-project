@@ -7,6 +7,8 @@ use App\Models\Communication;
 use App\Models\Company;
 use App\Http\Requests\StoreCompanyRequest;
 use App\Http\Requests\UpdateCompanyRequest;
+use App\Models\FreelancePost;
+use App\Models\JobPost;
 use App\Models\Locations;
 use App\Models\User;
 use App\Models\Wallet;
@@ -41,7 +43,7 @@ class CompanyController extends Controller
      */
     public function index()
     {
-        $companies = Company::with('user','location', 'communication')->get();
+        $companies = Company::with('user','location','communication')->get();
          return CompanyResource::collection($companies);
     }
     public function getMyCompany()
@@ -266,6 +268,20 @@ class CompanyController extends Controller
 
             //$this->authorize('delete', $company);
 
+            $freelancePosts = FreelancePost::
+            where('company_id', $company->id)
+                ->get();
+            foreach ($freelancePosts as $freelancePost){
+                $freelancePost->skill()->detach();
+                $freelancePost->delete();
+            }
+            $jobPosts = JobPost::
+            where('company_id', $company->id)
+                ->get();
+            foreach ($jobPosts as $jobPost){
+                $jobPost->skill()->detach();
+                $jobPost->delete();
+            }
             if ($company->picture) {
                 Storage::disk('public')->delete($company->picture);
             }
