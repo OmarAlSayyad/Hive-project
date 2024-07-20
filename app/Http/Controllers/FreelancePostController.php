@@ -195,9 +195,10 @@ class FreelancePostController extends Controller
     public function update(UpdateFreelancePostRequest $request, FreelancePost $freelancePost)
     {
 
-        $freelancePost = FreelancePost::findOrFail($freelancePost->id);
         try {
-                $this->authorize('update', $freelancePost);
+            $freelancePost = FreelancePost::findOrFail($freelancePost->id);
+
+            $this->authorize('update', $freelancePost);
 
 
                 $validated = $request->validated();

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\ExperienceController;
 use App\Http\Controllers\FreelancePostController;
 use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\SeekerController;
@@ -48,8 +49,14 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/freelance_post',[FreelancePostController::class,'index'])->name('api.freelance_post.index');
     //show  freelance post by id
     Route::get('/freelance_post/{freelancePost}', [FreelancePostController::class, 'show'])->name('api.freelance_post.show');
-    // show all seeker posts by id
+    // show all seeker posts by seeker id
     Route::get('/seeker_posts_by_id/{seeker}',[FreelancePostController::class,'getFreelancePostsById'])->name('api.freelance_post.getFreelancePostsById');
+
+
+    //show  experience by id
+    Route::get('/experiences/{experience}', [ExperienceController::class, 'show'])->name('api.experiences.show');
+    // show all seeker experiences by id
+    Route::get('/seeker_experiences_by_id/{seeker}',[ExperienceController::class,'getExperiencesById'])->name('api.experiences.getExperiencesById');
 
 
 
@@ -69,6 +76,16 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/update_seeker_profile',[SeekerController::class,'update'])->name('api.seekers.update');
         //delete seeker profile
        Route::delete('/seekers',[SeekerController::class,'destroy'])->name('api.seekers.destroy');
+
+
+        // show all seeker experiences
+        Route::get('/my_experiences',[ExperienceController::class,'getMyExperiences'])->name('api.experiences.getMyExperiences');
+        //add experiences
+        Route::post('/experiences', [ExperienceController::class, 'store'])->name('api.experiences.store');
+        //modify the experiences
+        Route::post('/experiences/{experience}',[ExperienceController::class,'update'])->name('api.experiences.update');
+        //delete experiences
+        Route::delete('/experiences/{experience}',[ExperienceController::class,'destroy'])->name('api.experiences.destroy');
 
 
         // show all seeker posts
