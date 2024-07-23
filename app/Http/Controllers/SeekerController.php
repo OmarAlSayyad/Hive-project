@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class SeekerController extends Controller
 {
@@ -67,16 +68,23 @@ class SeekerController extends Controller
      */
     public function store(StoreSeekerRequest $request)
     {
-        $user = Auth::user();
+       // try {
+
+
+            $user = Auth::user();
+
+//            $token = $request->bearerToken(); // Get the token from the request
+//            $tokenInstance = PersonalAccessToken::findToken($token); // Find the token instance
+//
+//            if (!$tokenInstance || !$tokenInstance->tokenable_id) {
+//                return response()->json(['message' => 'Unauthorized'], 401);
+//            }
+//        }catch (Exception $e){
+//            return response()->json(['message' => 'Unauthorized'], 401);
+//
+//        }
         try {
-            $validated = $request->validated();
-            if (!$validated) {
-                return response()->json([
-                    'data' => '',
-                    'message' => $request->errors()->all(),
-                    'status' => 422,
-                ]);
-            }
+
             $existingSeeker = Seeker::where('user_id', $user->id)->first();
             if ($existingSeeker) {
                 return response()->json([

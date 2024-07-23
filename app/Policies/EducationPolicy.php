@@ -4,10 +4,13 @@ namespace App\Policies;
 
 use App\Models\Education;
 use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 
 class EducationPolicy
 {
+    use HandlesAuthorization;
+
     /**
      * Determine whether the user can view any models.
      */
@@ -35,17 +38,29 @@ class EducationPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Education $education): bool
+    public function update(User $user, Education $education)
     {
-        //
+        $seeker = $user->seeker;
+
+        if($seeker && $seeker->id === $education->seeker_id){
+            return true;
+        }
+        return $this->deny('You do not have permission to update this education certificate.');
+
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Education $education): bool
+    public function delete(User $user, Education $education)
     {
-        //
+        $seeker = $user->seeker;
+
+        if($seeker && $seeker->id === $education->seeker_id){
+            return true;
+        }
+        return $this->deny('You do not have permission to delete this education certificate.');
+
     }
 
     /**

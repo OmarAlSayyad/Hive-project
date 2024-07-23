@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\EducationController;
 use App\Http\Controllers\ExperienceController;
 use App\Http\Controllers\FreelancePostController;
 use App\Http\Controllers\JobPostController;
@@ -60,6 +61,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 
 
+    //show  education by id
+    Route::get('/educations/{education}', [EducationController::class, 'show'])->name('api.education.show');
+    // show all seeker educations by id
+    Route::get('/seeker_education_by_id/{seeker}',[EducationController::class,'getEducationsById'])->name('api.education.getEducationsById');
+
+
+
     Route::get('/job-post',[JobPostController::class,'index'])->name('api.job_post.index');
     Route::get('/job-post/{jobPost}', [JobPostController::class, 'show'])->name('api.job_post.show');
 
@@ -86,6 +94,16 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/experiences/{experience}',[ExperienceController::class,'update'])->name('api.experiences.update');
         //delete experiences
         Route::delete('/experiences/{experience}',[ExperienceController::class,'destroy'])->name('api.experiences.destroy');
+
+
+        // show all seeker educations
+        Route::get('/my_educations',[EducationController::class,'getMyEducations'])->name('api.educations.getMyEducations');
+        //add educations
+        Route::post('/educations', [EducationController::class, 'store'])->name('api.educations.store');
+        //modify the educations
+        Route::post('/educations/{education}',[EducationController::class,'update'])->name('api.educations.update');
+        //delete educations
+        Route::delete('/educations/{education}',[EducationController::class,'destroy'])->name('api.educations.destroy');
 
 
         // show all seeker posts

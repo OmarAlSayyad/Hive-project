@@ -165,10 +165,10 @@ class ExperienceController extends Controller
                 'message' => $e->getMessage(),
             ], 403);
         } catch (Exception $e) {
-            Log::error('Error while updating  freelance :' . $e->getMessage());
+            Log::error('Error while updating  experience :' . $e->getMessage());
             return response()->json([
                 'data' => '',
-                'message' => 'An error occurred while update the freelance post',
+                'message' => 'An error occurred while update the experience',
                 'status' => 500,
             ], 500);
         }
