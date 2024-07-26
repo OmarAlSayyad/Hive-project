@@ -19,26 +19,26 @@ class ExperienceController extends Controller
      */
     public function index()
     {
-        //
+        $experiences = Experience::all();
+        return ExperienceResource::collection($experiences);
     }
-
 
     public function getMyExperiences(){
         try {
-            $user=Auth::user();
-            $seeker = Seeker::where('user_id', $user->id)->first();
-            if ($seeker) {
+            $user = Auth::user() ;
+            $seeker = Seeker::where('user_id',$user->id)->first();
+            if ($seeker)
+            {
                 $experience = Experience::where('seeker_id', $seeker->id)->get();
             }
-
-            if ($experience->isEmpty()) {
+            if ($experience->isEmpty())
+            {
                 return response()->json([
                     'data' => [],
                     'message' => 'No experiences was found for this seeker ',
                     'status' => 404,
                 ], 404);
             }
-
             return response()->json([
                 'data' => ExperienceResource::collection($experience),
                 'message' => 'Experiences retrieved successfully',
@@ -54,11 +54,9 @@ class ExperienceController extends Controller
         }
     }
 
-
     public function getExperiencesById(Seeker $seeker)
     {
         try {
-
             $experience= Experience::where('seeker_id', $seeker->id)->get();
             if ($experience->isEmpty()) {
                 return response()->json([
@@ -67,13 +65,11 @@ class ExperienceController extends Controller
                     'status' => 404,
                 ], 404);
             }
-
             return response()->json([
                 'data' => ExperienceResource::collection($experience),
                 'message' => 'Experience retrieved successfully',
                 'status' => 200,
             ], 200);
-
         } catch (Exception $e) {
             Log::error('Error retrieving seeker experience: ' . $e->getMessage());
             return response()->json([
@@ -98,21 +94,20 @@ class ExperienceController extends Controller
      */
     public function store(StoreExperienceRequest $request)
     {
-
-
-        try {
+        try
+        {
             $user=Auth::user();
-        $seeker = Seeker::where('user_id', $user->id)->first();
+            $seeker = Seeker::where('user_id', $user->id)->first();
 
-        $experience=Experience::create([
-            'seeker_id'=>$seeker->id,
-            'job_title'=>$request->job_title,
-            'company_name'=>$request->company_name,
-            'job_description'=>$request->job_description,
-            'start_date'=>$request->start_date,
-            'end_date'=>$request->end_date,
-        ]);
-        } catch (Exception $e) {
+             $experience=Experience::create([
+                'seeker_id'=>$seeker->id,
+                'job_title'=>$request->job_title,
+                'company_name'=>$request->company_name,
+                'job_description'=>$request->job_description,
+                'start_date'=>$request->start_date,
+                'end_date'=>$request->end_date,
+            ]);
+        }catch (Exception $e) {
             Log::error('Error while adding experience :' . $e->getMessage());
             return response()->json([
                 'data' => '',
@@ -120,13 +115,11 @@ class ExperienceController extends Controller
                 'status' => 500,
             ], 500);
         }
-
         return response()->json([
-            'data' =>  ExperienceResource::make($experience),
+            'data' =>  ExperienceResource::collection(collect([$experience])),
             'message' => ' experience added  successfully',
             'status' => 200,
-        ],200);
-
+            ],200);
     }
 
     /**
@@ -134,7 +127,8 @@ class ExperienceController extends Controller
      */
     public function show(Experience $experience)
     {
-        return ExperienceResource::make($experience);
+        $experience = Experience::findOrFail($experience->id);
+        return ExperienceResource::collection([$experience]);
     }
 
     /**
@@ -172,9 +166,8 @@ class ExperienceController extends Controller
                 'status' => 500,
             ], 500);
         }
-
             return response()->json([
-                'data' => ExperienceResource::make($experience),
+                'data' => ExperienceResource::collection(collect([$experience])),
                 'message' => ' experience updated successfully',
                 'status' => 200,
             ], 200);
@@ -187,9 +180,7 @@ class ExperienceController extends Controller
     {
         try {
             $this->authorize('delete',$experience);
-
             $experience->delete();
-
             return response()->json([
                 'data' => '',
                 'message' => 'experience deleted successfully',

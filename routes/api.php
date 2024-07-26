@@ -5,6 +5,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\EducationController;
 use App\Http\Controllers\ExperienceController;
 use App\Http\Controllers\FreelancePostController;
+use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\SeekerController;
 use App\Http\Controllers\UserController;
@@ -55,7 +56,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 
     //show  experience by id
-    Route::get('/experiences/{experience}', [ExperienceController::class, 'show'])->name('api.experiences.show');
+    Route::get('/experiences/{experience}', [ExperienceController::class,'show'])->name('api.experiences.show');
     // show all seeker experiences by id
     Route::get('/seeker_experiences_by_id/{seeker}',[ExperienceController::class,'getExperiencesById'])->name('api.experiences.getExperiencesById');
 
@@ -70,6 +71,16 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/job-post',[JobPostController::class,'index'])->name('api.job_post.index');
     Route::get('/job-post/{jobPost}', [JobPostController::class, 'show'])->name('api.job_post.show');
+
+
+
+    // get all interview and interview by id
+    Route::get('/interview',[InterviewController::class,'index'])->name('api.interview.index');
+    Route::get('/interview/{interview}',[InterviewController::class,'show'])->name('api.interview.show');
+
+    //get company interviews by company id for admin
+    Route::get('/company-interview/{company}',[InterviewController::class,'companyInterview'])->name('api.interview.companyInterview');
+
 
 
     Route::middleware([SeekerMiddleware::class])->group(function () {
@@ -115,6 +126,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         //delete freelance post
         Route::delete('/freelance_post/{freelancePost}',[FreelancePostController::class,'destroy'])->name('api.freelance_post.destroy');
 
+
+
+
+
+        // seeker accept interview
+        Route::post('/accept-interview/{interview}',[InterviewController::class,'seekerAcceptInterview'])->name('api.interview.seekerAcceptInterview');
+
     });
     Route::middleware([CompanyMiddleware::class])->group(function (){
 
@@ -138,6 +156,14 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/company/freelance-post', [FreelancePostController::class,'store'])->name('api.freelance-post.store');
         Route::post('/company/freelance-post/{freelancePost}',[FreelancePostController::class,'update'])->name('api.freelance-post.update');
         Route::delete('/company/freelance-post/{freelancePost}',[FreelancePostController::class,'destroy'])->name('api.freelance-post.destroy');
+
+
+
+        Route::get('/my-company-interview',[InterviewController::class,'getMyInterview'])->name('api.interview.getMyInterview');
+
+        Route::post('/interview',[InterviewController::class,'store'])->name('api.interview.store');
+        Route::post('/interview/{interview}',[InterviewController::class,'update'])->name('api.interview.update');
+        Route::delete('/interview/{interview}',[InterviewController::class,'destroy'])->name('api.interview.destroy');
 
 
     });

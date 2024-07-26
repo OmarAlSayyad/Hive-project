@@ -13,7 +13,6 @@ class Experience extends Model
          'seeker_id', 'job_title', 'company_name', 'job_description', 'start_date','end_date'
     ];
 
-
     public function seeker()
     {
         return $this->belongsTo(Seeker::class);
