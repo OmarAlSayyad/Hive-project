@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\SeekerResource;
 use App\Models\Communication;
+use App\Models\Company;
 use App\Models\FreelancePost;
 use App\Models\Locations;
 use App\Models\Seeker;
@@ -14,6 +15,7 @@ use App\Models\Wallet;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -29,6 +31,15 @@ class SeekerController extends Controller
     {
         $seekers = Seeker::with('user', 'location', 'communication')->get();
         return SeekerResource::collection($seekers);
+    }
+    public function rating(Seeker $seeker,Request $request)
+    {
+        $user = Auth::user();
+        $seek = Seeker::where('user_id',$user->id);
+        if ($seek)
+        {
+            $seeker->update($request->only(['rating']));
+        }
     }
 
     public function getMySeeker()
@@ -129,17 +140,17 @@ class SeekerController extends Controller
             $picture = $request->file('picture');
             if ($picture) {
                 $pictureName = Str::random(32) . "." . $picture->getClientOriginalExtension();
-                Storage::disk('public')->put($pictureName, file_get_contents($picture));
+                $picturePath = $picture->storeAs('public', $pictureName);
             } else {
-                $pictureName = null;
+                $picturePath = null;
             }
 
             $cv = $request->file('cv');
             if ($cv) {
                 $cvName = Str::random(32) . "." . $cv->getClientOriginalExtension();
-                Storage::disk('public')->put($cvName, file_get_contents($cv));
+                $cvPath = $picture->storeAs('public', $cvName);
             } else {
-                $cvName = null;
+                $cvPath = null;
             }
 
             try {
@@ -147,9 +158,9 @@ class SeekerController extends Controller
                     'user_id' => $user->id,
                     'communication_id' => $communication->id,
                     'location_id' => $location->id,
-                    'cv' => $cvName,
+                    'cv' => $cvPath,
                     'level' => $request->input('level', 'Beginner'),
-                    'picture' => $pictureName,
+                    'picture' => $picturePath,
                     'bio' => $request->input('bio', null),
                     'gender' => $request->input('gender', 'Not_determined'),
                     'hourly_rate' => $request->input('hourly_rate', null),
@@ -251,24 +262,24 @@ class SeekerController extends Controller
             $picture = $request->file('picture');
             if ($picture) {
                 $pictureName = Str::random(32) . "." . $picture->getClientOriginalExtension();
-                Storage::disk('public')->put($pictureName, file_get_contents($picture));
+                $picturePath = $picture->storeAs('public', $pictureName);
 
                 if ($seeker->picture) {
                     Storage::disk('public')->delete($seeker->picture);
                 }
 
-                $seeker->picture = $pictureName;
+                $seeker->picture = $picturePath;
             }
                 $cv = $request->file('cv');
                 if ($cv) {
                     $cvName = Str::random(32) . "." . $cv->getClientOriginalExtension();
-                    Storage::disk('public')->put($cvName, file_get_contents($cv));
+                    $cvPath = $cv->storeAs('public', $cvName);
 
                     if ($seeker->cv) {
                         Storage::disk('public')->delete($seeker->cv);
                     }
 
-                    $seeker->cv = $cvName;
+                    $seeker->cv = $cvPath;
                     $seeker->save();
                 }
             $seeker->load(['user', 'location', 'communication']);
