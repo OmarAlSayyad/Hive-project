@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class SeekerResource extends JsonResource
 {
@@ -18,8 +19,8 @@ class SeekerResource extends JsonResource
             'id' => $this->id,
 
             'rating' => $this->rating,
-            'picture' => $this->picture,
-            'cv' => $this->cv,
+            'picture' => $this->picture ? url(Storage::url($this->picture)) : null,
+            'cv' => $this->cv ? url(Storage::url($this->cv)) : null,
             'level' => $this->level,
             'bio' => $this->bio,
             'gender' => $this->gender,

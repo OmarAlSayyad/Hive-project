@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class CompanyResource extends JsonResource
 {
@@ -17,7 +18,7 @@ class CompanyResource extends JsonResource
         return [
             'id' => $this->id,
 
-            'picture' => $this->picture,
+            'picture' => $this->picture ? url(Storage::url($this->picture)) : null,
             'industry' => $this->industry,
             'description' => $this->description,
             'rating' => $this->rating,

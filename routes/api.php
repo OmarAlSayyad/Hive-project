@@ -96,6 +96,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         //delete seeker profile
        Route::delete('/seekers',[SeekerController::class,'destroy'])->name('api.seekers.destroy');
 
+       // Company Rating
+       Route::post('/company-rating/{company}',[CompanyController::class,'rating'])->name('api.company.rating');
+       // Seeker Rating
+       Route::post('/seeker-rating/{seeker}',[SeekerController::class,'rating'])->name('api.seekers.rating');
+
+
 
         // show all seeker experiences
         Route::get('/my_experiences',[ExperienceController::class,'getMyExperiences'])->name('api.experiences.getMyExperiences');
