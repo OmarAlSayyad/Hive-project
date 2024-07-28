@@ -10,15 +10,18 @@ use App\Http\Requests\UpdateCompanyRequest;
 use App\Models\FreelancePost;
 use App\Models\JobPost;
 use App\Models\Locations;
-use App\Models\User;
+use App\Models\Seeker;
 use App\Models\Wallet;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -46,6 +49,39 @@ class CompanyController extends Controller
         $companies = Company::with('user','location','communication')->get();
          return CompanyResource::collection($companies);
     }
+
+    public function rating(Company $company,Request $request)
+    {
+        $user = Auth::user();
+        $seeker = Seeker::where('user_id',$user->id);
+        if (!$company)
+        {
+            return response()->json([
+                'data' => '',
+                'message' => ' Company not found',
+                'status' => 404
+            ], 404);
+        }
+        $validator = Validator::make($request->all(),
+            ['rating' => 'required|numeric|between:1,5',]);
+        if ($validator->fails())
+        {
+            return response()->json([
+                'data' => '',
+                'message' => $validator->errors(),
+                'status' => 422
+            ], 422);
+        }
+
+        $company->update($request->only(['rating']));
+
+        return response()->json([
+            'data' => '',
+            'message' => ' Rating updated successfully',
+            'status' => 200
+        ],200);
+    }
+
     public function getMyCompany()
     {
         try {
@@ -131,16 +167,16 @@ class CompanyController extends Controller
             $picture = $request->file('picture');
             if ($picture) {
                 $pictureName = Str::random(32) . "." . $picture->getClientOriginalExtension();
-                Storage::disk('public')->put($pictureName, file_get_contents($picture));
+                $picturePath = $picture->storeAs('public', $pictureName);
             } else {
-                $pictureName = null;
+                $picturePath = null;
             }
             try {
                 $company = Company::create([
                     'user_id' =>$user->id,
                     'location_id' => $location->id,
                     'communication_id' => $communication->id,
-                    'picture' => $pictureName,
+                    'picture' => $picturePath,
                     'rating' =>$request->input('rating',1),
                     'approved' =>$request->input('approved',false),
                     'industry' => $request->industry,
@@ -214,50 +250,67 @@ class CompanyController extends Controller
 
     public function update(UpdateCompanyRequest $request)
     {
-
         $user = Auth::user();
-        $company= Company::where('user_id', $user->id)->first();
+        $company = Company::where('user_id', $user->id)->first();
+
+        if (!$company) {
+            return response()->json([
+                'data' => '',
+                'message' => 'Company not found',
+                'status' => 404
+            ], 404);
+        }
 
         try {
             $this->authorize('update', $company);
 
-            if ($request->hasAny(['address', 'city', 'country'])) {
-                $company->location()->update($request->only(['address', 'city', 'country']));
-            }
-
-            if ($request->hasAny(['mobile_phone', 'line_phone', 'website', 'linkedin_account', 'github_account', 'facebook_account'])) {
-                $company->communication()->update($request->only(['mobile_phone', 'line_phone', 'website', 'linkedin_account', 'github_account', 'facebook_account']));
-            }
-
-            $company->update($request->except(['user_id', 'location_id', 'communication_id']));
-
-            $picture = $request->file('picture');
-            if ($picture) {
-                $pictureName = Str::random(32) . "." . $picture->getClientOriginalExtension();
-                Storage::disk('public')->put($pictureName, file_get_contents($picture));
-
-                if ($company->picture) {
-                    Storage::disk('public')->delete($company->picture);
+            DB::transaction(function () use ($request, $company) {
+                if ($request->hasAny(['address', 'city', 'country'])) {
+                    $company->location()->update($request->only(['address', 'city', 'country']));
                 }
 
-                $company->picture = $pictureName;
-                $company->save();
-            }
+                if ($request->hasAny(['mobile_phone', 'line_phone', 'website', 'linkedin_account', 'github_account', 'facebook_account'])) {
+                    $company->communication()->update($request->only(['mobile_phone', 'line_phone', 'website', 'linkedin_account', 'github_account', 'facebook_account']));
+                }
+
+                $company->update($request->except(['user_id', 'location_id', 'communication_id']));
+
+                $picture = $request->file('picture');
+                if ($picture) {
+                    $pictureName = Str::random(32) . "." . $picture->getClientOriginalExtension();
+                    $picturePath = $picture->storeAs('public', $pictureName);
+
+                    if ($company->picture) {
+                        Storage::disk('public')->delete($company->picture);
+                    }
+
+                    $company->picture = $picturePath;
+                    $company->save();
+                }
+            });
 
             $company->load(['user', 'location', 'communication']);
             return response()->json([
-                'data' =>  CompanyResource::collection(collect([$company])),
+                'data' => CompanyResource::collection(collect([$company])),
                 'message' => 'Company updated successfully',
                 'status' => 200
             ], 200);
         } catch (AuthorizationException $e) {
             return response()->json([
-                'data' =>'',
+                'data' => '',
                 'message' => $e->getMessage(),
                 'status' => 403
             ], 403);
+        } catch (Exception $e) {
+            Log::error('Error updating company: ' . $e->getMessage());
+            return response()->json([
+                'data' => '',
+                'message' => 'An error occurred while updating the company',
+                'status' => 500
+            ], 500);
         }
     }
+
 
     /**
      * Remove the specified resource from storage.

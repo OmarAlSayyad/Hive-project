@@ -4,6 +4,7 @@ use App\Http\Controllers\ApplicantsFreelancePostController;
 use App\Http\Controllers\ApplicantsJobPostController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\ContractController;
 use App\Http\Controllers\EducationController;
 use App\Http\Controllers\ExperienceController;
 use App\Http\Controllers\FreelancePostController;
@@ -87,6 +88,18 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/company-interview/{company}',[InterviewController::class,'companyInterview'])->name('api.interview.companyInterview');
 
 
+    Route::get('/contracts',[ContractController::class,'index'])->name('api.contract.index');
+    Route::get('/contracts/{contract}',[ContractController::class,'show'])->name('api.contract.show');
+    Route::get('/company-contracts/{company}',[ContractController::class,'companyContract'])->name('api.contract.companyContract');
+    Route::get('/my-company-contracts',[ContractController::class,'myCompanyContract'])->name('api.contract.myCompanyContract');
+    Route::get('/seeker-contracts/{seeker}',[ContractController::class,'seekerContract'])->name('api.contract.seekerContract');
+    Route::get('/my-seeker-contracts',[ContractController::class,'mySeekerContract'])->name('api.contract.mySeekerContract');
+
+    Route::post('/contract',[ContractController::class,'store'])->name('api.contract.store');
+    Route::post('/contract/{contract}',[ContractController::class,'update'])->name('api.contract.update');
+    Route::delete('/contract/{contract}',[ContractController::class,'destroy'])->name('api.contract.destroy');
+
+
 
     Route::middleware([SeekerMiddleware::class])->group(function () {
 
@@ -100,6 +113,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/update_seeker_profile',[SeekerController::class,'update'])->name('api.seekers.update');
         //delete seeker profile
        Route::delete('/seekers',[SeekerController::class,'destroy'])->name('api.seekers.destroy');
+
+       // Company Rating
+       Route::post('/company-rating/{company}',[CompanyController::class,'rating'])->name('api.company.rating');
+       // Seeker Rating
+       Route::post('/seeker-rating/{seeker}',[SeekerController::class,'rating'])->name('api.seekers.rating');
+
 
 
         // show all seeker experiences
