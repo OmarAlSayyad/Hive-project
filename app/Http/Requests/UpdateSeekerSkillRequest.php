@@ -25,7 +25,7 @@ class UpdateSeekerSkillRequest extends FormRequest
     {
         return [
             'skill_id' => 'required',
-           // 'level' => 'required|string|max:255',
+            'level' => 'nullable|string',
         ];
     }
 

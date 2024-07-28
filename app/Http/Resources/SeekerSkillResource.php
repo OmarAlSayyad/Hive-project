@@ -18,7 +18,8 @@ class SeekerSkillResource extends JsonResource
        'id' => $this->id,
         'seeker_id' => $this->seeker_id,
         'skill_id'=>$this->skill_id,
-            'skill_name' => optional($this->skill)->name,        //'name1'=>$this->ski,
+        'skill_name' => optional($this->skill)->name,
+        'level'=>$this->level,
     ];
     }
 }

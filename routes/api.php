@@ -128,7 +128,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         //modify the skills
         Route::post('/seeker-skills/{seekerSkill}',[SeekerSkillController::class,'update'])->name('api.skills.update');
         //delete skills
-        Route::delete('/skills/{skill}',[SeekerSkillController::class,'destroy'])->name('api.skills.destroy');
+        Route::delete('/seeker-skills/{seekerSkill}',[SeekerSkillController::class,'destroy'])->name('api.skills.destroy');
 
 
         // show all seeker freelance applicants

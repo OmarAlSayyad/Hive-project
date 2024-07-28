@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('seeker_id')->constrained('seekers');
             $table->foreignId('skill_id')->constrained('skills');
+            $table->enum('level',[1,2,3,4,5])->default(null);
+
             $table->timestamps();
 
             $table->index('seeker_id');
