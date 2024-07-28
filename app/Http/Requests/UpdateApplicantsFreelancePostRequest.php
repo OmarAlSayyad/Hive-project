@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateApplicantsFreelancePostRequest extends FormRequest
 {
@@ -11,7 +13,7 @@ class UpdateApplicantsFreelancePostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +24,18 @@ class UpdateApplicantsFreelancePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'freelance_post_id'=>'required|exists:freelance_posts,id'
+
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        $errors = $validator->errors();
+        $response = response()->json([
+            'message' => 'Invalid data send',
+            'details' => $errors->messages(),
+        ], 422);
+        throw new HttpResponseException($response);
     }
 }

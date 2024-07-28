@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\ApplicantsFreelancePostController;
+use App\Http\Controllers\ApplicantsJobPostController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\EducationController;
@@ -8,6 +10,7 @@ use App\Http\Controllers\FreelancePostController;
 use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\SeekerController;
+use App\Http\Controllers\SeekerSkillController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\CompanyMiddleware;
 use App\Http\Middleware\SeekerMiddleware;
@@ -67,6 +70,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // show all seeker educations by id
     Route::get('/seeker_education_by_id/{seeker}',[EducationController::class,'getEducationsById'])->name('api.education.getEducationsById');
 
+    // show all seeker skills by id
+    Route::get('/seeker_skills_by_id/{seeker}',[SeekerSkillController::class,'getSkillsById'])->name('api.skills.getSkillsById');
 
 
     Route::get('/job-post',[JobPostController::class,'index'])->name('api.job_post.index');
@@ -116,6 +121,33 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         //delete educations
         Route::delete('/educations/{education}',[EducationController::class,'destroy'])->name('api.educations.destroy');
 
+        // show all seeker skills
+        Route::get('/my_skills',[SeekerSkillController::class,'getMySkills'])->name('api.skills.getMySkills');
+        //add skills
+        Route::post('/skills', [SeekerSkillController::class, 'store'])->name('api.skills.store');
+        //modify the skills
+        Route::post('/seeker-skills/{seekerSkill}',[SeekerSkillController::class,'update'])->name('api.skills.update');
+        //delete skills
+        Route::delete('/skills/{skill}',[SeekerSkillController::class,'destroy'])->name('api.skills.destroy');
+
+
+        // show all seeker freelance applicants
+        Route::get('/my_freelance_applicants',[ApplicantsFreelancePostController::class,'getMyApplicants'])->name('api.freelance_applicants.getMyApplicants');
+        //show  freelance applicant by id
+        Route::get('/freelance_applicants/{applicant}', [ApplicantsFreelancePostController::class, 'show'])->name('api.freelance_applicants.show');
+        //add freelance applicants
+        Route::post('/freelance_applicants', [ApplicantsFreelancePostController::class, 'store'])->name('api.freelance_applicants.store');
+        //delete freelance applicants
+        Route::delete('/freelance_applicants/{applicant}',[ApplicantsFreelancePostController::class,'destroy'])->name('api.freelance_applicants.destroy');
+
+        //show  job applicant by id
+        Route::get('/job_applicants/{applicants}', [ApplicantsJobPostController::class, 'show'])->name('api.job_applicants.show');
+        //add job applicants
+        Route::post('/job_applicants', [ApplicantsJobPostController::class, 'store'])->name('api.job_applicants.store');
+        //delete job applicants
+        Route::delete('/job_applicants/{applicant}',[ApplicantsJobPostController::class,'destroy'])->name('api.job_applicants.destroy');
+
+
 
         // show all seeker posts
         Route::get('/seeker_posts',[FreelancePostController::class,'getFreelancePosts'])->name('api.freelance_post.getFreelancePosts');
@@ -125,6 +157,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/freelance_post/{freelancePost}',[FreelancePostController::class,'update'])->name('api.freelance_post.update');
         //delete freelance post
         Route::delete('/freelance_post/{freelancePost}',[FreelancePostController::class,'destroy'])->name('api.freelance_post.destroy');
+
 
 
 

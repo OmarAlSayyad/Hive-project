@@ -10,7 +10,7 @@ class Education extends Model
     use HasFactory;
 
     protected $fillable = [
-        'seeker_id', 'certificate', 'field_of_study', 'institution_name', 'graduation_date', 'specialization', 'status', 'study_mode'
+        'seeker_id','start_date', 'field_of_study', 'institution_name', 'graduation_date','graduation_degree', 'specialization', 'status', 'study_mode','scientific_level',
     ];
 
     public function seeker()

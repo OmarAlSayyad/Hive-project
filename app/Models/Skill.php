@@ -19,7 +19,7 @@ class Skill extends Model
         return $this->belongsTo(Category::class);
     }
 
-    public function seeker_skill()
+    public function seekerSkills()
     {
         return $this->belongsToMany(Seeker::class, 'seeker_skills');
     }

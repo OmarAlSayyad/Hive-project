@@ -39,7 +39,7 @@ class EducationController extends Controller
             }
 
             return response()->json([
-                'data' => EducationResource::collection($education),
+                'data' => EducationResource::collection(collect($education)),
                 'message' => 'Education certificate retrieved successfully',
                 'status' => 200,
             ], 200);
@@ -68,7 +68,7 @@ class EducationController extends Controller
             }
 
             return response()->json([
-                'data' => EducationResource::collection($education),
+                'data' => EducationResource::collection(collect($education)),
                 'message' => 'education certificates retrieved successfully',
                 'status' => 200,
             ], 200);
@@ -98,17 +98,17 @@ class EducationController extends Controller
     {
 
         try {
-            $user=Auth::user();
+            $user = Auth::user();
             $seeker = Seeker::where('user_id', $user->id)->first();
 
-            $education=Education::create([
-                'seeker_id'=>$seeker->id,
-                'institution_name'=> $request->institution_name,
-                'field_of_study'=> $request->field_of_study,
-                'start_date'=> $request->start_date,
-                'graduation_date'=> $request->graduation_date,
-                'graduation_degree'=> $request->graduation_degree,
-                'scientific_level'=> $request->scientific_level,
+            $education = Education::create([
+                'seeker_id' => $seeker->id,
+                'institution_name' => $request->institution_name,
+                'field_of_study' => $request->field_of_study,
+                'start_date' => $request->start_date,
+                'graduation_date' => $request->graduation_date,
+                'graduation_degree' => $request->graduation_degree,
+                'scientific_level' => $request->scientific_level,
             ]);
         } catch (Exception $e) {
             Log::error('Error while adding education certificate :' . $e->getMessage());
@@ -120,19 +120,19 @@ class EducationController extends Controller
         }
 
         return response()->json([
-            'data' =>  EducationResource::make($education),
-            'message' => ' education certificate added  successfully',
+            'data' => EducationResource::collection(collect([$education])),
+            'message' => 'Education certificate added successfully',
             'status' => 200,
-        ],200);
-
+        ], 200);
     }
+
 
     /**
      * Display the specified resource.
      */
     public function show(Education $education)
     {
-        return EducationResource::make($education);
+        return EducationResource::collection([$education]);
     }
 
     /**
@@ -172,7 +172,7 @@ class EducationController extends Controller
         }
 
         return response()->json([
-            'data' => EducationResource::make($education),
+            'data' => EducationResource::collection(collect([$education])),
             'message' => ' education certificate updated successfully',
             'status' => 200,
         ], 200);

@@ -24,12 +24,14 @@ class StoreEducationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'institution_name'=>'required|string',
-            'field_of_study'=>'nullable|string',
-            'start_date'=>'nullable|date',
-            'graduation_date'=>'required|date',
-            'graduation_degree'=>'nullable',
-            'scientific_level'=>'required|string',
+
+            'institution_name' => 'required|string|max:255',
+            'field_of_study' => 'nullable|string|max:255',
+            'start_date' => 'nullable|date',
+            'graduation_date' => 'required|date',
+            'graduation_degree' => 'nullable|numeric',
+            'scientific_level' => 'required|string',
+
         ];
     }
     protected function failedValidation(Validator $validator)
