@@ -19,6 +19,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Laravel\Sanctum\PersonalAccessToken;
 
@@ -35,11 +36,30 @@ class SeekerController extends Controller
     public function rating(Seeker $seeker,Request $request)
     {
         $user = Auth::user();
-        $seek = Seeker::where('user_id',$user->id);
-        if ($seek)
-        {
-            $seeker->update($request->only(['rating']));
+        $seek = Seeker::where('user_id', $user->id)->first();
+        if (!$seek) {
+            return response()->json([
+                'data' => '',
+                'message' => 'Seeker not found',
+                'status' => 404
+            ], 404);
         }
+        $validator = Validator::make($request->all(),
+            ['rating' => 'required|numeric|between:1,5',]);
+        if ($validator->fails()) {
+            return response()->json([
+                'data' => '',
+                'message' => $validator->errors(),
+                'status' => 422
+            ], 422);
+        }
+        $seeker->update($request->only(['rating']));
+        return response()->json([
+            'data' => '',
+            'message' => 'Rating updated successfully',
+            'status' => 200
+        ],200);
+
     }
 
     public function getMySeeker()
@@ -50,6 +70,7 @@ class SeekerController extends Controller
 
             if (!$seeker) {
                 return response()->json([
+                    'data' => '',
                     'message' => 'Seeker profile not found for the current user',
                     'status' => 404
                 ], 404);
@@ -60,6 +81,7 @@ class SeekerController extends Controller
             Log::error('Error retrieving seeker: ' . $e->getMessage());
 
             return response()->json([
+                'data' => '',
                 'message' => 'Failed to retrieve seeker',
                 'status' => 500
             ], 500);
