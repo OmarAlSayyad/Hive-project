@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\ContractController;
 use App\Http\Controllers\EducationController;
 use App\Http\Controllers\ExperienceController;
 use App\Http\Controllers\FreelancePostController;
@@ -80,6 +81,18 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     //get company interviews by company id for admin
     Route::get('/company-interview/{company}',[InterviewController::class,'companyInterview'])->name('api.interview.companyInterview');
+
+
+    Route::get('/contracts',[ContractController::class,'index'])->name('api.contract.index');
+    Route::get('/contracts/{contract}',[ContractController::class,'show'])->name('api.contract.show');
+    Route::get('/company-contracts/{company}',[ContractController::class,'companyContract'])->name('api.contract.companyContract');
+    Route::get('/my-company-contracts',[ContractController::class,'myCompanyContract'])->name('api.contract.myCompanyContract');
+    Route::get('/seeker-contracts/{seeker}',[ContractController::class,'seekerContract'])->name('api.contract.seekerContract');
+    Route::get('/my-seeker-contracts',[ContractController::class,'mySeekerContract'])->name('api.contract.mySeekerContract');
+
+    Route::post('/contract',[ContractController::class,'store'])->name('api.contract.store');
+    Route::post('/contract/{contract}',[ContractController::class,'update'])->name('api.contract.update');
+    Route::delete('/contract/{contract}',[ContractController::class,'destroy'])->name('api.contract.destroy');
 
 
 

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('seeker_hire_id')->nullable()->constrained('seekers');
 
             $table->foreignId('freelancer_id')->constrained('seekers');
+
             $table->foreignId('freelance_id')->constrained('freelance_posts');
 
             $table->text('terms');

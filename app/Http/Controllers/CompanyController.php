@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -53,10 +54,32 @@ class CompanyController extends Controller
     {
         $user = Auth::user();
         $seeker = Seeker::where('user_id',$user->id);
-        if ($seeker)
+        if (!$company)
         {
-            $company->update($request->only(['rating']));
+            return response()->json([
+                'data' => '',
+                'message' => ' Company not found',
+                'status' => 404
+            ], 404);
         }
+        $validator = Validator::make($request->all(),
+            ['rating' => 'required|numeric|between:1,5',]);
+        if ($validator->fails())
+        {
+            return response()->json([
+                'data' => '',
+                'message' => $validator->errors(),
+                'status' => 422
+            ], 422);
+        }
+
+        $company->update($request->only(['rating']));
+
+        return response()->json([
+            'data' => '',
+            'message' => ' Rating updated successfully',
+            'status' => 200
+        ],200);
     }
 
     public function getMyCompany()
