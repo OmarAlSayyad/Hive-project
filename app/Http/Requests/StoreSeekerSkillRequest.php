@@ -25,7 +25,8 @@ class StoreSeekerSkillRequest extends FormRequest
     {
         return [
             'skill_id' => 'exists:skills,id',
-        ];
+            'level' => 'nullable|string',
+            ];
     }
 
 

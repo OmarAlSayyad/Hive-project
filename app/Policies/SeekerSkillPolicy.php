@@ -4,10 +4,12 @@ namespace App\Policies;
 
 use App\Models\SeekerSkill;
 use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 
 class SeekerSkillPolicy
 {
+    use HandlesAuthorization;
     /**
      * Determine whether the user can view any models.
      */
@@ -35,17 +37,29 @@ class SeekerSkillPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, SeekerSkill $seekerSkill): bool
+    public function update(User $user, SeekerSkill $seekerSkill)
     {
-        //
+        $seeker = $user->seeker;
+
+        if($seeker && $seeker->id === $seekerSkill->seeker_id){
+            return true;
+        }
+        return $this->deny('You do not have permission to update this skill.');
+
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, SeekerSkill $seekerSkill): bool
+    public function delete(User $user, SeekerSkill $seekerSkill)
     {
-        //
+        $seeker = $user->seeker;
+
+        if($seeker && $seeker->id === $seekerSkill->seeker_id){
+            return true;
+        }
+        return $this->deny('You do not have permission to delete this skill.');
+
     }
 
     /**
