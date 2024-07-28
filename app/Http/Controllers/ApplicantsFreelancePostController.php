@@ -11,6 +11,7 @@ use App\Http\Requests\UpdateApplicantsFreelancePostRequest;
 use App\Models\FreelancePost;
 use App\Models\Seeker;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -68,6 +69,41 @@ class ApplicantsFreelancePostController extends Controller
         }
     }
 
+    public function getApplicantsById(Seeker $seeker)
+    {
+        try {
+
+            if ($seeker){
+                $applicants=ApplicantsFreelancePost::with(['freelance_post'])
+                    ->where('seeker_id', $seeker->id)
+                    ->get();
+            }
+
+            if ($applicants->isEmpty()) {
+                return response()->json([
+                    'data' => [],
+                    'message' => 'No applicants was found for this seeker',
+                    'status' => 404,
+                ], 404);
+            }
+
+            return response()->json([
+                'data' => ApplicantFreelancePostResource::collection($applicants),
+                'message' => 'applicants retrieved successfully',
+                'status' => 200,
+            ], 200);
+
+        } catch (Exception $e) {
+            Log::error('Error retrieving seeker applicants: ' . $e->getMessage());
+            return response()->json([
+                'data' => [],
+                'message' => 'An error occurred while retrieving applicants',
+                'status' => 500,
+            ], 500);
+        }
+    }
+
+
 
     /**
      * Store a newly created resource in storage.
@@ -105,8 +141,9 @@ class ApplicantsFreelancePostController extends Controller
      */
     public function show(ApplicantsFreelancePost $applicantsFreelancePost)
     {
+        $applicantsFreelancePost=ApplicantsFreelancePost::findOrFail($applicantsFreelancePost->id);
         $applicantsFreelancePost->load(['freelance_post']);
-        return ApplicantFreelancePostResource::collection(collect([$applicantsFreelancePost]));
+        return ApplicantFreelancePostResource::collection([$applicantsFreelancePost]);
     }
 
     /**
@@ -133,18 +170,23 @@ class ApplicantsFreelancePostController extends Controller
         try {
 
 
-            // $this->authorize('delete',$applicantsFreelancePost);
-            $freelance=FreelancePost::where('id',$applicantsFreelancePost->freelance_post_id)->first();
-            $freelance->applicants_freelance_post()->detach();
+             $this->authorize('delete',$applicantsFreelancePost);
+          $applicantsFreelancePost=ApplicantsFreelancePost::findOrFail($applicantsFreelancePost->id);
 
-            if ($applicantsFreelancePost->delete()) {
-
+            if ($applicantsFreelancePost) {
+                $applicantsFreelancePost->delete();
                 return response()->json([
                     'data' => '',
                     'message' => 'applicants deleted successfully',
                     'status' => 200,
                 ], 200);
             }
+        }
+        catch (AuthorizationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 403);
         }
         catch (Exception $e) {
             Log::error('Error deleting applicant: ' . $e->getMessage());
