@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ApplicantjobPostResource;
+use App\Models\ApplicantsFreelancePost;
 use App\Models\ApplicantsJobPost;
 use App\Http\Requests\StoreApplicantsJobPostRequest;
 use App\Http\Requests\UpdateApplicantsJobPostRequest;
 use App\Models\Seeker;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -29,12 +31,84 @@ class ApplicantsJobPostController extends Controller
         //
     }
 
+    public function getMyApplicants()
+    {
+        try {
+            $user = Auth::user();
+            $seeker = Seeker::where('user_id', $user->id)->first();
+
+            if ($seeker){
+                $applicants=ApplicantsJobPost::with(['job_post'])
+                    ->where('seeker_id', $seeker->id)
+                    ->get();
+            }
+
+            if ($applicants->isEmpty()) {
+                return response()->json([
+                    'data' => [],
+                    'message' => 'No applicants was found ',
+                    'status' => 404,
+                ], 404);
+            }
+
+            return response()->json([
+                'data' => ApplicantjobPostResource::collection($applicants),
+                'message' => 'applicants retrieved successfully',
+                'status' => 200,
+            ], 200);
+
+        } catch (Exception $e) {
+            Log::error('Error retrieving seeker applicants: ' . $e->getMessage());
+            return response()->json([
+                'data' => [],
+                'message' => 'An error occurred while retrieving applicants',
+                'status' => 500,
+            ], 500);
+        }
+    }
+
+    public function getApplicantsById(Seeker $seeker)
+    {
+        try {
+
+            if ($seeker){
+                $applicants=ApplicantsFreelancePost::with(['job_post'])
+                    ->where('seeker_id', $seeker->id)
+                    ->get();
+            }
+
+            if ($applicants->isEmpty()) {
+                return response()->json([
+                    'data' => [],
+                    'message' => 'No applicants was found for this seeker',
+                    'status' => 404,
+                ], 404);
+            }
+
+            return response()->json([
+                'data' => ApplicantjobPostResource::collection($applicants),
+                'message' => 'applicants retrieved successfully',
+                'status' => 200,
+            ], 200);
+
+        } catch (Exception $e) {
+            Log::error('Error retrieving seeker applicants: ' . $e->getMessage());
+            return response()->json([
+                'data' => [],
+                'message' => 'An error occurred while retrieving applicants',
+                'status' => 500,
+            ], 500);
+        }
+    }
+
+
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(StoreApplicantsJobPostRequest $request)
     {
-        //try {
+        try {
         $user=Auth::user();
         $seeker = Seeker::where('user_id', $user->id)->first();
 
@@ -43,17 +117,17 @@ class ApplicantsJobPostController extends Controller
             'job_post_id'=>$request->job_post_id,
         ]);
 
-        //} catch (Exception $e) {
-        //    Log::error('Error while applicant on job post :' . $e->getMessage());
-        //    return response()->json([
-        //        'data' => '',
-        //        'message' => 'An error occurred while applicant on job post',
-        //        'status' => 500,
-        //    ], 500);
-        //}
-
+        } catch (Exception $e) {
+            Log::error('Error while applicant on job post :' . $e->getMessage());
+            return response()->json([
+                'data' => '',
+                'message' => 'An error occurred while applicant on job post',
+                'status' => 500,
+            ], 500);
+        }
+            $applicant->load(['job_post']);
         return response()->json([
-            'data' =>  $applicant,//ApplicantjobPostResource::make($applicant->load(['job_post'])),
+            'data' =>  ApplicantjobPostResource::collection(collect([$applicant])),
             'message' => ' applicant on job post added  successfully',
             'status' => 200,
         ],200);
@@ -96,19 +170,28 @@ class ApplicantsJobPostController extends Controller
 
             $this->authorize('delete',$applicantsJobPost);
 
-            $applicantsJobPost->delete();
+            $applicantsJobPost=ApplicantsJobPost::findOrFail($applicantsJobPost->id);
 
+            if ($applicantsJobPost) {
+                $applicantsJobPost->delete();
+                return response()->json([
+                    'data' => '',
+                    'message' => 'applicants deleted successfully',
+                    'status' => 200,
+                ], 200);
+            }
+        }
+        catch (AuthorizationException $e) {
             return response()->json([
-                'data' => '',
-                'message' => 'applicants deleted successfully',
-                'status' => 200,
-            ], 200);
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 403);
         }
         catch (Exception $e) {
-            Log::error('Error deleting applicant: ' . $e->getMessage());
+            Log::error('Error deleting this applicant: ' . $e->getMessage());
             return response()->json([
                 'data' => '',
-                'message' => 'An error occurred while deleting this applicants',
+                'message' => 'An error occurred while deleting this applicant',
                 'status' => 500,
             ], 500);
         }

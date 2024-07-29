@@ -77,8 +77,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/job-post',[JobPostController::class,'index'])->name('api.job_post.index');
     Route::get('/job-post/{jobPost}', [JobPostController::class, 'show'])->name('api.job_post.show');
-
-    Route::get('/seeker_freelance_applicants/{seeker}',[ApplicantsFreelancePostController::class,'getApplicantsById'])->name('api.seeker_freelance_applicants.getApplicantsById');
+//
+//    //get all
+//    Route::get('/seeker_job_applicants/{seeker}',[ApplicantsJobPostController::class,'getApplicantsById'])->name('api.seeker_job_applicants.getApplicantsById');
+//
+//    Route::get('/seeker_freelance_applicants/{seeker}',[ApplicantsFreelancePostController::class,'getApplicantsById'])->name('api.seeker_freelance_applicants.getApplicantsById');
 
 
     // get all interview and interview by id
@@ -151,7 +154,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('/seeker-skills/{seekerSkill}',[SeekerSkillController::class,'destroy'])->name('api.skills.destroy');
 
 
-        // show all seeker freelance applicants
+        // show all  freelance applicants for seeker
         Route::get('/my_freelance_applicants',[ApplicantsFreelancePostController::class,'getMyApplicants'])->name('api.applicants-freelance-post.getMyApplicants');
         //show  freelance applicant by id
         Route::get('/applicants-freelance-post/{applicantsFreelancePost}', [ApplicantsFreelancePostController::class, 'show'])->name('api.applicants-freelance-post.show');
@@ -160,12 +163,14 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         //delete freelance applicants
         Route::delete('/applicants-freelance-post/{applicantsFreelancePost}',[ApplicantsFreelancePostController::class,'destroy'])->name('api.applicants-freelance-post.destroy');
 
+        //show all job applicants for seeker
+        Route::get('/my_job_applicants',[ApplicantsJobPostController::class,'getMyApplicants'])->name('api.applicants-job-post.getMyApplicants');
         //show  job applicant by id
-        Route::get('/job_applicants/{applicants}', [ApplicantsJobPostController::class, 'show'])->name('api.job_applicants.show');
+        Route::get('/job_applicants/{applicantsJobPost}', [ApplicantsJobPostController::class, 'show'])->name('api.job_applicants.show');
         //add job applicants
         Route::post('/job_applicants', [ApplicantsJobPostController::class, 'store'])->name('api.job_applicants.store');
         //delete job applicants
-        Route::delete('/job_applicants/{applicant}',[ApplicantsJobPostController::class,'destroy'])->name('api.job_applicants.destroy');
+        Route::delete('/job_applicants/{applicantsJobPost}',[ApplicantsJobPostController::class,'destroy'])->name('api.job_applicants.destroy');
 
 
 

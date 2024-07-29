@@ -4,10 +4,12 @@ namespace App\Policies;
 
 use App\Models\ApplicantsJobPost;
 use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
 
 class ApplicantsJobPostPolicy
 {
+    use HandlesAuthorization;
     /**
      * Determine whether the user can view any models.
      */
@@ -43,9 +45,15 @@ class ApplicantsJobPostPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, ApplicantsJobPost $applicantsJobPost): bool
+    public function delete(User $user, ApplicantsJobPost $applicantsJobPost)
     {
-        //
+        $seeker = $user->seeker;
+
+        if($seeker && $seeker->id === $applicantsJobPost->seeker_id){
+            return true;
+        }
+        return $this->deny('You do not have permission to delete this applicant .');
+
     }
 
     /**
