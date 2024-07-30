@@ -69,35 +69,35 @@ class ApplicantsFreelancePostController extends Controller
         }
     }
 
-    public function getApplicantsById(Seeker $seeker)
+    public function getApplicantsByFreelanceId(FreelancePost $freelancePost)
     {
         try {
 
-            if ($seeker){
+            if ($freelancePost){
                 $applicants=ApplicantsFreelancePost::with(['freelance_post'])
-                    ->where('seeker_id', $seeker->id)
+                    ->where('freelance_post_id', $freelancePost->id)
                     ->get();
             }
 
             if ($applicants->isEmpty()) {
                 return response()->json([
                     'data' => [],
-                    'message' => 'No applicants was found for this seeker',
+                    'message' => 'No applicants was found for this freelance post',
                     'status' => 404,
                 ], 404);
             }
 
             return response()->json([
-                'data' => ApplicantFreelancePostResource::collection($applicants),
-                'message' => 'applicants retrieved successfully',
+                'data' =>  ApplicantFreelancePostResource::collection($applicants),
+                'message' => 'applicants on this freelance retrieved successfully',
                 'status' => 200,
             ], 200);
 
         } catch (Exception $e) {
-            Log::error('Error retrieving seeker applicants: ' . $e->getMessage());
+            Log::error('Error retrieving  applicants on this freelance: ' . $e->getMessage());
             return response()->json([
                 'data' => [],
-                'message' => 'An error occurred while retrieving applicants',
+                'message' => 'An error occurred while retrieving applicants on this freelance',
                 'status' => 500,
             ], 500);
         }

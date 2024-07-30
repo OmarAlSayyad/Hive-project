@@ -7,6 +7,7 @@ use App\Models\ApplicantsFreelancePost;
 use App\Models\ApplicantsJobPost;
 use App\Http\Requests\StoreApplicantsJobPostRequest;
 use App\Http\Requests\UpdateApplicantsJobPostRequest;
+use App\Models\JobPost;
 use App\Models\Seeker;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -67,35 +68,35 @@ class ApplicantsJobPostController extends Controller
         }
     }
 
-    public function getApplicantsById(Seeker $seeker)
+    public function getApplicantsByJobId(JobPost $jobPost)
     {
         try {
 
-            if ($seeker){
-                $applicants=ApplicantsFreelancePost::with(['job_post'])
-                    ->where('seeker_id', $seeker->id)
+            if ($jobPost){
+                $applicants=ApplicantsJobPost::with(['job_post'])
+                    ->where('job_post_id', $jobPost->id)
                     ->get();
             }
 
             if ($applicants->isEmpty()) {
                 return response()->json([
                     'data' => [],
-                    'message' => 'No applicants was found for this seeker',
+                    'message' => 'No applicants was found for this job post',
                     'status' => 404,
                 ], 404);
             }
 
             return response()->json([
                 'data' => ApplicantjobPostResource::collection($applicants),
-                'message' => 'applicants retrieved successfully',
+                'message' => 'applicants on this job post retrieved successfully',
                 'status' => 200,
             ], 200);
 
         } catch (Exception $e) {
-            Log::error('Error retrieving seeker applicants: ' . $e->getMessage());
+            Log::error('Error retrieving  applicants on this job post : ' . $e->getMessage());
             return response()->json([
                 'data' => [],
-                'message' => 'An error occurred while retrieving applicants',
+                'message' => 'An error occurred while retrieving applicants on this job post ',
                 'status' => 500,
             ], 500);
         }

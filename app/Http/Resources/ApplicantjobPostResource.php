@@ -8,6 +8,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class ApplicantjobPostResource extends JsonResource
 {
 
+
     /**
      * Transform the resource into an array.
      *

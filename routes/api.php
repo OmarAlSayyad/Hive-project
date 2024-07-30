@@ -74,14 +74,15 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // show all seeker skills by id
     Route::get('/seeker_skills_by_id/{seeker}',[SeekerSkillController::class,'getSkillsById'])->name('api.skills.getSkillsById');
 
+//
+//    Route::get('/job-post',[JobPostController::class,'index'])->name('api.job_post.index');
+//    Route::get('/job-post/{jobPost}', [JobPostController::class, 'show'])->name('api.job_post.show');
+//
+    //get all  applicants on job post by job post id
+    Route::get('/job_post/{jobPost}',[ApplicantsJobPostController::class,'getApplicantsByJobId'])->name('api.job_post.getApplicantsByJobId');
 
-    Route::get('/job-post',[JobPostController::class,'index'])->name('api.job_post.index');
-    Route::get('/job-post/{jobPost}', [JobPostController::class, 'show'])->name('api.job_post.show');
-//
-//    //get all
-//    Route::get('/seeker_job_applicants/{seeker}',[ApplicantsJobPostController::class,'getApplicantsById'])->name('api.seeker_job_applicants.getApplicantsById');
-//
-//    Route::get('/seeker_freelance_applicants/{seeker}',[ApplicantsFreelancePostController::class,'getApplicantsById'])->name('api.seeker_freelance_applicants.getApplicantsById');
+    //get all applicants on freelance post by freelance post id
+    Route::get('/freelance_applicants/{freelancePost}',[ApplicantsFreelancePostController::class,'getApplicantsByFreelanceId'])->name('api.freelance_applicants.getApplicantsByFreelanceId');
 
 
     // get all interview and interview by id
