@@ -28,6 +28,46 @@ class SeekerController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function searchBySeeker($seekerName)
+    {
+        $user = Auth::user();
+
+        if ($seekerName) {
+            $user = User::where('name', 'like', '%' . $seekerName . '%')->first();
+
+            if ($user) {
+                $seeker = Seeker::where('user_id', $user->id)->first();
+
+                if ($seeker) {
+                    return response()->json([
+                        'data' => collect([$seeker]),
+                        'message' => 'Seeker found',
+                        'status' => 200,
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'data' => null,
+                        'message' => 'No seeker information found for this user',
+                        'status' => 404,
+                    ], 404);
+                }
+            } else {
+                return response()->json([
+                    'data' => null,
+                    'message' => 'No user found with the specified name',
+                    'status' => 404,
+                ], 404);
+            }
+        } else {
+            return response()->json([
+                'data' => null,
+                'message' => 'Seeker name is required',
+                'status' => 400,
+            ], 400);
+        }
+    }
+
+
     public function index()
     {
         $seekers = Seeker::with('user', 'location', 'communication')->get();
