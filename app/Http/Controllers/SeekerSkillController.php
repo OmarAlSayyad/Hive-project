@@ -105,14 +105,38 @@ class SeekerSkillController extends Controller
         try {
             $user = Auth::user();
             $seeker = Seeker::where('user_id', $user->id)->first();
-            if ($seeker) {
+
+
+            if (!$seeker) {
+                return response()->json([
+                    'data' => [],
+                    'message' => 'You dont have seeker profile',
+                    'status' => 404,
+                ], 404);
+
+            }
+
+            $existingSkill = SeekerSkill::where('seeker_id', $seeker->id)
+                ->where('skill_id', $request->skill_id)
+                ->first();
+
+            if ($existingSkill) {
+                return response()->json([
+                    'data' => [],
+                    'message' => 'You have already this skill',
+                    'status' => 409,
+                ], 409);
+            }
+
+
+
 
                 $skill= SeekerSkill::create([
                     'seeker_id' => $seeker->id,
                     'skill_id' => $request->skill_id,
                     'level'=>$request->level,
                 ]);
-            }
+
 
             $skill->load('skill');
         }

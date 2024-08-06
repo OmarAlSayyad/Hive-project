@@ -113,6 +113,28 @@ class ApplicantsJobPostController extends Controller
         $user=Auth::user();
         $seeker = Seeker::where('user_id', $user->id)->first();
 
+
+            if($seeker->cv===null){
+                return response()->json([
+                    'data' => [],
+                    'message' => 'No cv was found for this seeker',
+                    'status' => 404,
+                ], 404);
+            }
+
+            $existingApplication = ApplicantsJobPost::where('seeker_id', $seeker->id)
+                ->where('job_post_id', $request->job_post_id)
+                ->first();
+
+            if ($existingApplication) {
+                return response()->json([
+                    'data' => [],
+                    'message' => 'You have already applied for this job post',
+                    'status' => 409,
+                ], 409);
+            }
+
+
         $applicant= ApplicantsJobPost::create([
             'seeker_id'=>$seeker->id,
             'job_post_id'=>$request->job_post_id,

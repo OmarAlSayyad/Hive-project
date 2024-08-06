@@ -7,6 +7,8 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\EducationController;
 use App\Http\Controllers\ExperienceController;
+use App\Http\Controllers\FavoriteFreelanceController;
+use App\Http\Controllers\FavoriteJobController;
 use App\Http\Controllers\FreelancePostController;
 use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\JobPostController;
@@ -188,6 +190,24 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/freelance_post/{freelancePost}',[FreelancePostController::class,'update'])->name('api.freelance_post.update');
         //delete freelance post
         Route::delete('/freelance_post/{freelancePost}',[FreelancePostController::class,'destroy'])->name('api.freelance_post.destroy');
+
+        // show all favorite posts for seeker
+        Route::get('/favorite_freelance',[FavoriteFreelanceController::class,'getMyFavoriteFreelance'])->name('api.favorite_freelance_post.getMyFavoriteFreelance');
+        //get favorite post by id
+        Route::get('/favorite_freelance_post/{favoriteFreelance}',[FavoriteFreelanceController::class,'show'])->name('api.favorite_freelance_post.show');
+        //add favorite posts
+        Route::post('/favorite_freelance_post', [FavoriteFreelanceController::class, 'store'])->name('api.favorite_freelance_post.store');
+        //delete favorite posts
+        Route::delete('/favorite_freelance_post/{favoriteFreelance}',[FavoriteFreelanceController::class,'destroy'])->name('api.favorite_freelance_post.destroy');
+
+        // show all favorite job posts for seeker
+        Route::get('/favorite_job',[FavoriteJobController::class,'getMyFavoriteJobs'])->name('api.favorite_job_post.getMyFavoriteJobs');
+        //get favorite  job post by id
+        Route::get('/favorite_job_post/{favoriteJob}',[FavoriteJobController::class,'show'])->name('api.favorite_job_post.show');
+        //add favorite  job posts
+        Route::post('/favorite_job_post', [FavoriteJobController::class, 'store'])->name('api.favorite_job_post.store');
+        //delete favorite job posts
+        Route::delete('/favorite_job_post/{favoriteJob}',[FavoriteJobController::class,'destroy'])->name('api.favorite_job_post.destroy');
 
 
 

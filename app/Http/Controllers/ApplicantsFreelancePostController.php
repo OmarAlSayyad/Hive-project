@@ -114,6 +114,27 @@ class ApplicantsFreelancePostController extends Controller
             $user=Auth::user();
             $seeker = Seeker::where('user_id', $user->id)->first();
 
+            if($seeker->cv===null){
+                return response()->json([
+                    'data' => [],
+                    'message' => 'No cv was found for this seeker',
+                    'status' => 404,
+                ], 404);
+            }
+
+            $existingApplication = ApplicantsFreelancePost::where('seeker_id', $seeker->id)
+                ->where('freelance_post_id', $request->freelance_post_id)
+                ->first();
+
+            if ($existingApplication) {
+                return response()->json([
+                    'data' => [],
+                    'message' => 'You have already applied for this freelance post',
+                    'status' => 409,
+                ], 409);
+            }
+
+
             $applicant= ApplicantsFreelancePost::create([
                 'seeker_id'=>$seeker->id,
                 'freelance_post_id'=>$request->freelance_post_id,
