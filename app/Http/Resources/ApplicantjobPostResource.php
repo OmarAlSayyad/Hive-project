@@ -20,6 +20,7 @@ class ApplicantjobPostResource extends JsonResource
             'id'=>$this->id,
             'seeker_id'=>$this->seeker_id,
             'job_post_id'=>$this->job_post_id,
+            'status'=>'submitted',
             'job_post'=> new JobPostsResource($this->whenLoaded('job_post')),
 
         ];
