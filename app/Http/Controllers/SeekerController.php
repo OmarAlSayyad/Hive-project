@@ -210,7 +210,7 @@ class SeekerController extends Controller
             $cv = $request->file('cv');
             if ($cv) {
                 $cvName = Str::random(32) . "." . $cv->getClientOriginalExtension();
-                $cvPath = $picture->storeAs('public', $cvName);
+                $cvPath = $cv->storeAs('public', $cvName);
             } else {
                 $cvPath = null;
             }
@@ -312,14 +312,14 @@ class SeekerController extends Controller
             $this->authorize('update', $seeker);
 
             if ($request->hasAny(['address', 'city', 'country'])) {
-                $dataToUpdate = $request->intersect(['address', 'city', 'country']);
-                $seeker->location()->update($dataToUpdate);
+                $seeker->location()->update($request->only(['address', 'city', 'country']));
             }
 
+
             if ($request->hasAny(['mobile_phone', 'line_phone', 'website', 'linkedin_account', 'github_account', 'facebook_account'])) {
-                $dataToUpdate = $request->intersect(['mobile_phone', 'line_phone', 'website', 'linkedin_account', 'github_account', 'facebook_account']);
-                $seeker->communication()->update($dataToUpdate);
+                $seeker->communication()->update($request->only(['mobile_phone', 'line_phone', 'website', 'linkedin_account', 'github_account', 'facebook_account']));
             }
+
 
             $seeker->update($request->except(['user_id', 'location_id', 'communication_id']));
 
