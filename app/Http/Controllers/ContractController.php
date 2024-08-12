@@ -7,7 +7,10 @@ use App\Models\Company;
 use App\Models\Contract;
 use App\Http\Requests\StoreContractRequest;
 use App\Http\Requests\UpdateContractRequest;
+use App\Models\Experience;
+use App\Models\FreelancePost;
 use App\Models\Seeker;
+use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -225,6 +228,63 @@ class ContractController extends Controller
         //
     }
 
+    public function automaticExperience(Contract $contract){
+
+        try {
+
+
+            $user = Auth::user();
+            $seeker = Seeker::where('user_id', $user->id)->first();
+
+            $freelancePost = FreelancePost::findOrFail($contract->freelance_id);
+
+            $existingExperience = Experience::where('seeker_id', $seeker->id)
+                ->where('job_title',$freelancePost->title)
+                ->first();
+
+            if ($existingExperience) {
+                $message="This work experience already exist";
+                return $message;
+            }
+
+            if ($freelancePost->seeker_id === null) {
+                $company = Company::where('id',$freelancePost->company_id)->first();
+                $user = User::where('id',$company->user_id)->first();
+                $experience = Experience::create([
+                    'seeker_id' => $seeker->id,
+                    'job_title' => $freelancePost->title,
+                    'company_name' => $user->name,
+                    'job_description' => $freelancePost->description,
+                    'start_date' => $contract->start_date,
+                    'end_date' => $contract->end_date,
+                ]);
+               return $message="This work experience has been  added automatically";
+            } elseif ($freelancePost->company_id === null) {
+                $seeker = Seeker::where('id',$freelancePost->seeker_id)->first();
+               $user = User::where('id',$seeker->user_id)->first();
+                $experience = Experience::create([
+                    'seeker_id' => $seeker->id,
+                    'job_title' => $freelancePost->title,
+                    'company_name' => $user->name,
+                    'job_description' => $freelancePost->description,
+                    'start_date' => $contract->start_date,
+                    'end_date' => $contract->end_date,
+                ]);
+               return $message="This work experience has been  added automatically";
+            }
+
+        }catch (Exception $e) {
+            Log::error('Error updating experience: ' . $e->getMessage(), ['exception' => $e]);
+
+            return response()->json([
+                'data' => '',
+                'message' => 'An error occurred while adding  experience for this work',
+                'status' => 500,
+            ], 500);
+        }
+
+    }
+
     /**
      * Update the specified resource in storage.
      */
@@ -239,12 +299,18 @@ class ContractController extends Controller
                 'terms' => $request->terms,
                 'start_date' => $request->start_date,
                 'end_date' => $request->end_date,
-                'status' => $request->input('status', $contract->status),
+                'status' => $request->status,//->input('status', $contract->status),
             ]);
+            $message="This work experience is not added ";
+            if($contract->status==='1'){
+               $message= $this->automaticExperience($contract);
+
+            }
 
             return response()->json([
                 'data' => new ContractResource($contract),
-                'message' => 'Contract updated successfully',
+                'message' => 'Contract updated successfully ',
+                'Experience status'=>$message,
                 'status' => 200,
             ], 200);
         } catch (Exception $e) {

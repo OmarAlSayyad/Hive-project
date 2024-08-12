@@ -18,7 +18,7 @@ class ApplicantFreelancePostResource extends JsonResource
             'id'=>$this->id,
             'seeker_id'=>$this->seeker_id,
             'freelance_post_id'=>$this->freelance_post_id,
-            'status'=>'submitted',
+            'status'=>$this->status,
             'freelance_post'=> new FreelancePostsResource($this->whenLoaded('freelance_post')),
 
         ];

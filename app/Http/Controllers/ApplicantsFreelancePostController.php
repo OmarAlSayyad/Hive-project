@@ -180,7 +180,7 @@ class ApplicantsFreelancePostController extends Controller
      */
     public function update(UpdateApplicantsFreelancePostRequest $request, ApplicantsFreelancePost $applicantsFreelancePost)
     {
-        //
+
     }
 
     /**

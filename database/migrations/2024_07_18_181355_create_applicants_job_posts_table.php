@@ -17,8 +17,8 @@ return new class extends Migration
             $table->foreignId('job_post_id')->constrained('job_posts')->cascadeOnDelete();
             $table->foreignId('seeker_id')->constrained('seekers')->cascadeOnDelete();
 
-            $table->boolean('Accepted')->default(false);
-
+          //  $table->boolean('Accepted')->default(false);
+            $table->enum('status',['Accepted','Refused','Pending'])->default('Pending');
 
             $table->timestamps();
         });

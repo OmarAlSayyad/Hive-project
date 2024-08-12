@@ -9,7 +9,7 @@ class ApplicantsFreelancePost extends Model
 {
     use HasFactory;
 
-    protected $fillable =['freelance_post_id' , 'seeker_id','Accepted'];
+    protected $fillable =['freelance_post_id' , 'seeker_id','status'];
 
     public function freelance_post(){
         return $this->belongsTo(FreelancePost::class);

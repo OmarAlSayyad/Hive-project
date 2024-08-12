@@ -9,7 +9,7 @@ class ApplicantsJobPost extends Model
 {
     use HasFactory;
 
-    protected $fillable =['job_post_id' , 'seeker_id','Accepted'];
+    protected $fillable =['job_post_id' , 'seeker_id','status'];
 
     public function job_post(){
         return $this->belongsTo(JobPost::class);
