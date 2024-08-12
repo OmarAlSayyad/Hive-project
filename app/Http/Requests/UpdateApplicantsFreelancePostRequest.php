@@ -24,7 +24,7 @@ class UpdateApplicantsFreelancePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'freelance_post_id'=>'required|exists:freelance_posts,id'
+            'status'=>'required'
 
         ];
     }

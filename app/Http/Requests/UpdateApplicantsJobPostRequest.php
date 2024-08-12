@@ -24,7 +24,7 @@ class UpdateApplicantsJobPostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'job_post_id'=>'required|exists:job_posts,id'
+            'status'=>'required'
 
         ];
     }

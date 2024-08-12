@@ -138,6 +138,7 @@ class ApplicantsFreelancePostController extends Controller
             $applicant= ApplicantsFreelancePost::create([
                 'seeker_id'=>$seeker->id,
                 'freelance_post_id'=>$request->freelance_post_id,
+                'status'=>'Pending'
             ]);
 
         } catch (Exception $e) {
@@ -180,6 +181,35 @@ class ApplicantsFreelancePostController extends Controller
      */
     public function update(UpdateApplicantsFreelancePostRequest $request, ApplicantsFreelancePost $applicantsFreelancePost)
     {
+        try {
+
+        $applicantsFreelancePost = ApplicantsFreelancePost::findOrFail($applicantsFreelancePost->id);
+        $freelancePost=FreelancePost::where('id',$applicantsFreelancePost->freelance_post_id)->first();
+        $this->authorize('update',$freelancePost);
+
+        $applicantsFreelancePost->update($request->except(['seeker_id', 'freelance_post_id']));
+
+        $applicantsFreelancePost->save();
+
+        } catch (AuthorizationException $e) {
+        return response()->json([
+            'success' => false,
+           'message' => $e->getMessage(),
+        ], 403);
+    }catch (Exception $e) {
+            Log::error('Error while modify this applicant  :' . $e->getMessage());
+            return response()->json([
+                'data' => '',
+                'message' => 'An error occurred while  modify this applicant',
+                'status' => 500,
+            ], 500);
+        }
+        $applicantsFreelancePost->load(['freelance_post']);
+        return response()->json([
+            'data' =>  ApplicantFreelancePostResource::collection(collect([$applicantsFreelancePost])),
+            'message' => ' applicant on freelance post added  successfully',
+            'status' => 200,
+        ],200);
 
     }
 

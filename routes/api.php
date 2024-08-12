@@ -87,9 +87,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     //get all  applicants on job post by job post id
     Route::get('/get_applicants_job_post/{jobPost}',[ApplicantsJobPostController::class,'getApplicantsByJobId'])->name('api.job_post.getApplicantsByJobId');
+    //modify the  job applicant
+    Route::post('/job_applicants/{applicantsJobPost}', [ApplicantsJobPostController::class, 'update'])->name('api.job_applicants.update');
 
     //get all applicants on freelance post by freelance post id
     Route::get('/freelance_applicants/{freelancePost}',[ApplicantsFreelancePostController::class,'getApplicantsByFreelanceId'])->name('api.freelance_applicants.getApplicantsByFreelanceId');
+    //modify the  freelance applicant
+    Route::post('/applicants-freelance-post/{applicantsFreelancePost}', [ApplicantsFreelancePostController::class, 'update'])->name('api.applicants-freelance-post.update');
 
 
     // get all interview and interview by id

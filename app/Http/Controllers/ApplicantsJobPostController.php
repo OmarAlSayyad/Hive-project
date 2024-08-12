@@ -7,6 +7,7 @@ use App\Models\ApplicantsFreelancePost;
 use App\Models\ApplicantsJobPost;
 use App\Http\Requests\StoreApplicantsJobPostRequest;
 use App\Http\Requests\UpdateApplicantsJobPostRequest;
+use App\Models\FreelancePost;
 use App\Models\JobPost;
 use App\Models\Seeker;
 use Exception;
@@ -138,6 +139,8 @@ class ApplicantsJobPostController extends Controller
         $applicant= ApplicantsJobPost::create([
             'seeker_id'=>$seeker->id,
             'job_post_id'=>$request->job_post_id,
+            'status'=>'Pending',
+
         ]);
 
         } catch (Exception $e) {
@@ -180,7 +183,36 @@ class ApplicantsJobPostController extends Controller
      */
     public function update(UpdateApplicantsJobPostRequest $request, ApplicantsJobPost $applicantsJobPost)
     {
-        //
+        try {
+
+            $applicantsJobPost = ApplicantsJobPost::findOrFail($applicantsJobPost->id);
+            $jobPost=JobPost::where('id',$applicantsJobPost->job_post_id)->first();
+            $this->authorize('update',$jobPost);
+
+            $applicantsJobPost->update($request->except(['seeker_id', 'job_post_id']));
+
+            $applicantsJobPost->save();
+
+        } catch (AuthorizationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 403);
+        }catch (Exception $e) {
+            Log::error('Error while modify this applicant  :' . $e->getMessage());
+            return response()->json([
+                'data' => '',
+                'message' => 'An error occurred while  modify this applicant',
+                'status' => 500,
+            ], 500);
+        }
+        $applicantsJobPost->load(['job_post']);
+        return response()->json([
+            'data' =>  ApplicantjobPostResource::collection(collect([$applicantsJobPost])),
+            'message' => ' applicant on freelance post added  successfully',
+            'status' => 200,
+        ],200);
+
     }
 
     /**

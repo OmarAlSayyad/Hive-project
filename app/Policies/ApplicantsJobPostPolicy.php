@@ -3,6 +3,8 @@
 namespace App\Policies;
 
 use App\Models\ApplicantsJobPost;
+use App\Models\FreelancePost;
+use App\Models\JobPost;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
@@ -37,9 +39,21 @@ class ApplicantsJobPostPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, ApplicantsJobPost $applicantsJobPost): bool
+    public function update(User $user, JobPost $jobPost)
     {
-        //
+        $seeker = $user->seeker;
+        $company = $user->company;
+
+
+        if (
+            ($seeker && $seeker->id === $jobPost->seeker_id) ||
+            ($company && $company->id === $jobPost->company_id)
+        ) {
+            return true;
+        }
+
+        return $this->deny('You do not have permission to modify this applicant.');
+
     }
 
     /**
