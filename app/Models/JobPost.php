@@ -16,6 +16,15 @@ class JobPost extends Model
         'job_type','experience_years','min_salary','max_salary','status'
     ];
 
+    public function scopeFilter($query , array $filters)
+    {
+        $query->when($filters['title'] ?? false, fn ($query,$search)=> $query
+            -> where('name','like','%'.$search.'%')
+            ->orwhere('description','like','%'.$search.'%')
+        );
+
+    }
+
     public function company()
     {
         return $this->belongsTo(Company::class);

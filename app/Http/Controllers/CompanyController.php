@@ -11,6 +11,7 @@ use App\Models\FreelancePost;
 use App\Models\JobPost;
 use App\Models\Locations;
 use App\Models\Seeker;
+use App\Models\User;
 use App\Models\Wallet;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -41,6 +42,45 @@ class CompanyController extends Controller
 //        $this->locationsController = $locationsController;
 //    }
 
+
+    public function searchByCompany($companyName)
+    {
+        $user = Auth::user();
+
+        if ($companyName) {
+            $user = User::where('name', 'like', '%' . $companyName . '%')->first();
+
+            if ($user) {
+                $company = Company::where('user_id', $user->id)->first();
+
+                if ($company) {
+                    return response()->json([
+                        'data' => collect([$company]),
+                        'message' => 'company found',
+                        'status' => 200,
+                    ], 200);
+                } else {
+                    return response()->json([
+                        'data' => null,
+                        'message' => 'No company information found for this user',
+                        'status' => 404,
+                    ], 404);
+                }
+            } else {
+                return response()->json([
+                    'data' => null,
+                    'message' => 'No user found with the specified name',
+                    'status' => 404,
+                ], 404);
+            }
+        } else {
+            return response()->json([
+                'data' => null,
+                'message' => 'company name is required',
+                'status' => 400,
+            ], 400);
+        }
+    }
     /**
      * Display a listing of the resource.
      */
@@ -50,37 +90,13 @@ class CompanyController extends Controller
          return CompanyResource::collection($companies);
     }
 
-    public function rating(Company $company,Request $request)
+
+    public function search(Request $request)
     {
-        $user = Auth::user();
-        $seeker = Seeker::where('user_id',$user->id);
-        if (!$company)
-        {
-            return response()->json([
-                'data' => '',
-                'message' => ' Company not found',
-                'status' => 404
-            ], 404);
-        }
-        $validator = Validator::make($request->all(),
-            ['rating' => 'required|numeric|between:1,5',]);
-        if ($validator->fails())
-        {
-            return response()->json([
-                'data' => '',
-                'message' => $validator->errors(),
-                'status' => 422
-            ], 422);
-        }
-
-        $company->update($request->only(['rating']));
-
-        return response()->json([
-            'data' => '',
-            'message' => ' Rating updated successfully',
-            'status' => 200
-        ],200);
+        $company = Company::latest()->filter()-get();
+        return CompanyResource::collection($company);
     }
+
 
     public function getMyCompany()
     {

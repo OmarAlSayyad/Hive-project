@@ -81,6 +81,10 @@ class Seeker extends Model
         return $this->hasMany(Transaction::class);
     }
 
+    public function seekerrating()
+    {
+        return $this->hasMany(Seeker::class);
+    }
 
 
 

@@ -25,7 +25,10 @@ class ContractResource extends JsonResource
             'terms' => $this->terms,
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
+            'delivered_date' => $this->delivered_date,
+
             'status' => $this->status,
+
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

@@ -67,39 +67,10 @@ class SeekerController extends Controller
         }
     }
 
-
     public function index()
     {
         $seekers = Seeker::with('user', 'location', 'communication')->get();
         return SeekerResource::collection($seekers);
-    }
-    public function rating(Seeker $seeker,Request $request)
-    {
-        $user = Auth::user();
-        $seek = Seeker::where('user_id', $user->id)->first();
-        if (!$seek) {
-            return response()->json([
-                'data' => '',
-                'message' => 'Seeker not found',
-                'status' => 404
-            ], 404);
-        }
-        $validator = Validator::make($request->all(),
-            ['rating' => 'required|numeric|between:1,5',]);
-        if ($validator->fails()) {
-            return response()->json([
-                'data' => '',
-                'message' => $validator->errors(),
-                'status' => 422
-            ], 422);
-        }
-        $seeker->update($request->only(['rating']));
-        return response()->json([
-            'data' => '',
-            'message' => 'Rating updated successfully',
-            'status' => 200
-        ],200);
-
     }
 
     public function getMySeeker()

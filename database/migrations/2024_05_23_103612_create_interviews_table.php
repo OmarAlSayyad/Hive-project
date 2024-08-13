@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('address');
             $table->text('notes');
             $table->boolean('status')->default(false);
-            $table->enum('result',['Accepted','Refused','Undefined'])->default('Undefined');
+            $table->enum('result',['Accepted','Refused','Pending'])->default('Pending');
             $table->timestamps();
 
             $table->index('company_id');

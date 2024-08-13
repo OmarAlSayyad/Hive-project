@@ -23,7 +23,10 @@ return new class extends Migration
             $table->text('terms');
             $table->dateTime('start_date');
             $table->dateTime('end_date');
+            $table->dateTime('delivered_date');
+
             $table->boolean('status')->default(false);
+
             $table->timestamps();
 
             $table->index('company_hire_id');

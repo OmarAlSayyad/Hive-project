@@ -4,6 +4,7 @@ use App\Http\Controllers\ApplicantsFreelancePostController;
 use App\Http\Controllers\ApplicantsJobPostController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\CompanyRatingController;
 use App\Http\Controllers\ContractController;
 use App\Http\Controllers\EducationController;
 use App\Http\Controllers\ExperienceController;
@@ -13,10 +14,12 @@ use App\Http\Controllers\FreelancePostController;
 use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\JobPostController;
 use App\Http\Controllers\SeekerController;
+use App\Http\Controllers\SeekerRatingController;
 use App\Http\Controllers\SeekerSkillController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\CompanyMiddleware;
 use App\Http\Middleware\SeekerMiddleware;
+use App\Models\CompanyRating;
 use Illuminate\Support\Facades\Route;
 
 //create user account
@@ -50,7 +53,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // company
     Route::get('/companies',[CompanyController::class,'index'])->name('api.companies.index');
     Route::get('/companies/{company}', [CompanyController::class, 'show'])->name('api.companies.show');
-    Route::get('/job-post/company/{company}', [JobPostController::class, 'companyJobPost'])->name('api.job_post.companyJobPost');
+    Route::get('/company-job-post/{company}', [JobPostController::class, 'companyJobPost'])->name('api.job_post.companyJobPost');
 
 
     //show all freelance posts
@@ -83,6 +86,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     //search for seeker by his name
     Route::get('/search_by_seeker_name/{seekerName}',[SeekerController::class,'searchBySeeker'])->name('api.search.searchBySeeker');
+
+    Route::get('/search-by-company-name/{companyName}',[CompanyController::class,'searchByCompany'])->name('api.search.searchByCompany');
 
 
     //get all  applicants on job post by job post id
@@ -129,11 +134,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/update_seeker_profile',[SeekerController::class,'update'])->name('api.seekers.update');
         //delete seeker profile
        Route::delete('/seekers',[SeekerController::class,'destroy'])->name('api.seekers.destroy');
-
-       // Company Rating
-       Route::post('/company-rating/{company}',[CompanyController::class,'rating'])->name('api.company.rating');
-       // Seeker Rating
-       Route::post('/seeker-rating/{seeker}',[SeekerController::class,'rating'])->name('api.seekers.rating');
 
 
 
@@ -215,11 +215,21 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 
 
-
-
-
         // seeker accept interview
         Route::post('/accept-interview/{interview}',[InterviewController::class,'seekerAcceptInterview'])->name('api.interview.seekerAcceptInterview');
+
+
+
+        // Company Rating
+        Route::post('/company-rating',[CompanyRatingController::class,'store'])->name('api.companyRating.store');
+        Route::post('/company-rating/{companyRating}',[CompanyRatingController::class,'update'])->name('api.companyRating.update');
+        Route::delete('/company-rating/{companyRating}',[CompanyRatingController::class,'destroy'])->name('api.companyRating.destroy');
+
+
+        // Seeker Rating
+        Route::post('/seeker-rating',[SeekerRatingController::class,'store'])->name('api.seekerRating.store');
+        Route::post('/seeker-rating/{seekerRating}',[SeekerRatingController::class,'update'])->name('api.seekerRating.update');
+        Route::delete('/seeker-rating/{seekerRating}',[SeekerRatingController::class,'destroy'])->name('api.seekerRating.destroy');
 
     });
     Route::middleware([CompanyMiddleware::class])->group(function (){
