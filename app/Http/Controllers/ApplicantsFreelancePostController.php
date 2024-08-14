@@ -74,9 +74,10 @@ class ApplicantsFreelancePostController extends Controller
         try {
 
             if ($freelancePost){
-                $applicants=ApplicantsFreelancePost::with(['freelance_post'])
+                $applicants=ApplicantsFreelancePost::with(['freelance_post','seeker'])
                     ->where('freelance_post_id', $freelancePost->id)
                     ->get();
+           //     $applicants->seeker=Seeker::where('id',$applicants->seeker_id)->get();
             }
 
             if ($applicants->isEmpty()) {
@@ -149,7 +150,7 @@ class ApplicantsFreelancePostController extends Controller
                 'status' => 500,
             ], 500);
         }
-        $applicant->load(['freelance_post']);
+        $applicant->load(['freelance_post','seeker']);
         return response()->json([
             'data' =>  ApplicantFreelancePostResource::collection(collect([$applicant])),
             'message' => ' applicant on freelance post added  successfully',
@@ -164,7 +165,7 @@ class ApplicantsFreelancePostController extends Controller
     public function show(ApplicantsFreelancePost $applicantsFreelancePost)
     {
         $applicantsFreelancePost=ApplicantsFreelancePost::findOrFail($applicantsFreelancePost->id);
-        $applicantsFreelancePost->load(['freelance_post']);
+        $applicantsFreelancePost->load(['freelance_post','seeker']);
         return ApplicantFreelancePostResource::collection([$applicantsFreelancePost]);
     }
 
@@ -204,7 +205,7 @@ class ApplicantsFreelancePostController extends Controller
                 'status' => 500,
             ], 500);
         }
-        $applicantsFreelancePost->load(['freelance_post']);
+        $applicantsFreelancePost->load(['freelance_post','seeker']);
         return response()->json([
             'data' =>  ApplicantFreelancePostResource::collection(collect([$applicantsFreelancePost])),
             'message' => ' applicant on freelance post added  successfully',

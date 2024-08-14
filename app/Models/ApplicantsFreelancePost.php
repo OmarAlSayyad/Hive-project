@@ -14,5 +14,8 @@ class ApplicantsFreelancePost extends Model
     public function freelance_post(){
         return $this->belongsTo(FreelancePost::class);
     }
+    public function seeker(){
+        return $this->belongsTo(Seeker::class);
+    }
 
 }
