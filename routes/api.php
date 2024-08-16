@@ -237,10 +237,14 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/filter-jobPosts',[FilterController::class,'filterJobPosts'])->name('api.filterController.filterJobPost');
         Route::get('/seeker-jobPosts-filter',[FilterController::class,'filterJobPostsForSeeker'])->name('api.filterController.filterJobPostsForSeeker');
         Route::get('/seeker-freelancePosts-filter',[FilterController::class,'filterFreelancePostForSeeker'])->name('api.filterController.filterFreelancePostForSeeker');
-        Route::get('/company-freelancePosts-filter',[FilterController::class,'filterFreelancePostForCompany'])->name('api.filterController.filterFreelancePostForCompany');
 
     });
     Route::middleware([CompanyMiddleware::class])->group(function (){
+
+        // filter freelance post
+        Route::get('/company-freelancePosts-filter',[FilterController::class,'filterFreelancePostForCompany'])->name('api.filterController.filterFreelancePostForCompany');
+
+
 
         Route::get('/my-profile-company',[CompanyController::class,'getMyCompany'])->name('api.companies.getMyCompany');
         Route::post('/companies',[CompanyController::class,'store'])->name('api.companies.store');

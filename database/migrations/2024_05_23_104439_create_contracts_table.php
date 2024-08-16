@@ -21,9 +21,10 @@ return new class extends Migration
             $table->foreignId('freelance_id')->constrained('freelance_posts');
 
             $table->text('terms');
-            $table->dateTime('start_date');
-            $table->dateTime('end_date');
-            $table->dateTime('delivered_date');
+            $table->date('start_date');
+            $table->date('end_date');
+
+            $table->date('delivered_date')->nullable();
 
             $table->boolean('status')->default(false);
 

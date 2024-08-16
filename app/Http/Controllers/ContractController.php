@@ -299,7 +299,7 @@ class ContractController extends Controller
                 'terms' => $request->terms,
                 'start_date' => $request->start_date,
                 'end_date' => $request->end_date,
-                'status' => $request->status,//->input('status', $contract->status),
+                //'status' => $request->status,//->input('status', $contract->status),
             ]);
             $message="This work experience is not added ";
             if($contract->status==='1'){

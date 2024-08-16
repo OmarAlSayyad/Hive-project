@@ -44,13 +44,13 @@ class FilterController extends Controller
         // Find the seeker
         $user =Auth::user();
 
-        $company = Company::with(['location','communication'])->findOrFail($user->id);
+        $company = Company::where('user_id', $user->id)->with(['location', 'communication'])->firstOrFail();
 
         // Get the filtered job posts
-        $freelancePost = FreelancePost::autoCompanyFreelancePosts($company)->get();
+        $freelancePosts = FreelancePost::autoCompanyFreelancePosts($company)->get();
 
         return response()->json([
-            'data' => FreelancePostsResource::collection($freelancePost),
+            'data' => FreelancePostsResource::collection($freelancePosts),
             'message' => 'Filtered freelance posts retrieved successfully',
             'status' => 200
         ], 200);

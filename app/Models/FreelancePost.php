@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class FreelancePost extends Model
 {
@@ -41,29 +42,30 @@ class FreelancePost extends Model
         });
         return $query;
     }
-    public function scopeAutoCompanyFreelancePosts(Builder $query, Seeker $company)
+    public function scopeAutoCompanyFreelancePosts(Builder $query, Company $company)
     {
+        Log::info('Filtering freelance posts for company:', ['company_id' => $company->id, 'industry' => $company->industry, 'description' => $company->description]);
+
         $query->where(function ($q) use ($company) {
-
+            // Filter by the company's industry in the freelance post's title or description
             $q->where(function ($q) use ($company) {
-                $company->education->each(function ($education) use ($q) {
-                    $q->where('title', 'like', '%' . $education->field_of_study . '%')
-                        ->orWhere('description', $education->scientific_level);
-                });
+                $q->where('title', 'like', '%' . $company->industry . '%')
+                    ->orWhere('description', 'like', '%' . $company->industry . '%');
             });
 
+            // Filter by the company's description in the freelance post's title or description
             $q->orWhere(function ($q) use ($company) {
-                $company->experience->each(function ($experience) use ($q) {
-                    $q->where('title', $experience->job_title)
-                        ->orWhere('description', 'like', '%' . $experience->job_description . '%');
-                });
+                $q->where('title', 'like', '%' . $company->description . '%')
+                    ->orWhere('description', 'like', '%' . $company->description . '%');
             });
 
-            // OR Filter by category and seeker skill
+            // Filter by the company's description and industry in the related category's skills
             $q->orWhereHas('categorySkills', function ($query) use ($company) {
-                $query->whereIn('skills.id', $company->skill->pluck('id')->toArray());
+                $query->where('skills.name', 'like', '%' . $company->description . '%')
+                    ->orWhere('skills.name', 'like', '%' . $company->industry . '%');
             });
         });
+
         return $query;
     }
 
