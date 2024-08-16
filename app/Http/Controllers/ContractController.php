@@ -297,7 +297,6 @@ class ContractController extends Controller
 
             $contract->update([
                 'delivered_date' => $request->delivered_date,
-                'status' => $request->input('status', true),
                 'delivered_on_time' => $deliveredOnTime,
             ]);
 
@@ -335,6 +334,34 @@ class ContractController extends Controller
     }
 
 
+    public function acceptContract(Request $request, Contract $contract)
+    {
+        try {
+            // Validate that the status is a boolean value
+            $request->validate([
+                'status' => 'required|boolean',
+            ]);
+
+            // Update only the status field of the contract
+            $contract->update([
+                'status' => $request->input('status'),
+            ]);
+
+            return response()->json([
+                'data' => new ContractResource($contract),
+                'message' => 'Contract status updated successfully',
+                'status' => 200,
+            ], 200);
+        } catch (Exception $e) {
+            Log::error('Error updating contract status: ' . $e->getMessage(), ['exception' => $e]);
+
+            return response()->json([
+                'data' => '',
+                'message' => 'An error occurred while updating the contract status',
+                'status' => 500,
+            ], 500);
+        }
+    }
 
 
     /**

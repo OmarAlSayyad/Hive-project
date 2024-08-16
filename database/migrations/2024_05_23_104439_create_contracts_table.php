@@ -26,6 +26,7 @@ return new class extends Migration
 
             $table->boolean('delivered_on_time')->nullable();
             $table->date('delivered_date')->nullable();
+
             $table->boolean('status')->default(false);
 
             $table->timestamps();

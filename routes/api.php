@@ -121,6 +121,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/contract/{contract}',[ContractController::class,'update'])->name('api.contract.update');
     Route::delete('/contract/{contract}',[ContractController::class,'destroy'])->name('api.contract.destroy');
     Route::post('/delivered/{contract}',[ContractController::class,'delivered'])->name('api.contract.delivered');
+    Route::post('/accept-contract/{contract}',[ContractController::class,'acceptContract'])->name('api.contract.acceptContract');
 
 
 
