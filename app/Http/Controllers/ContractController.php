@@ -12,6 +12,7 @@ use App\Models\FreelancePost;
 use App\Models\Seeker;
 use App\Models\User;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -285,6 +286,36 @@ class ContractController extends Controller
 
     }
 
+    public function delivered(Request $request, Contract $contract)
+    {
+        $request->validate([
+            'delivered_date' => 'required|date',
+            'status' => 'boolean',
+        ]);
+
+        try {
+            $data = $request->only('delivered_date');
+            $data['status'] = $request->boolean('status', true);
+
+            $contract->update($data);
+
+            return response()->json([
+                'data' => $contract,
+                'message' => 'Contract updated successfully',
+                'status' => 200,
+            ], 200);
+        } catch (Exception $e) {
+            Log::error('Error updating Contract: ' . $e->getMessage(), ['exception' => $e]);
+
+            return response()->json([
+                'data' => '',
+                'message' => 'An error occurred while updating the Contract',
+                'status' => 500,
+            ], 500);
+        }
+    }
+
+
     /**
      * Update the specified resource in storage.
      */
@@ -321,7 +352,9 @@ class ContractController extends Controller
                 'message' => 'An error occurred while updating the Contract',
                 'status' => 500,
             ], 500);
-        }    }
+        }
+
+    }
 
     /**
      * Remove the specified resource from storage.

@@ -120,6 +120,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/contract',[ContractController::class,'store'])->name('api.contract.store');
     Route::post('/contract/{contract}',[ContractController::class,'update'])->name('api.contract.update');
     Route::delete('/contract/{contract}',[ContractController::class,'destroy'])->name('api.contract.destroy');
+    Route::post('/delivered/{contract}',[ContractController::class,'delivered'])->name('api.contract.delivered');
 
 
 
@@ -237,6 +238,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/filter-jobPosts',[FilterController::class,'filterJobPosts'])->name('api.filterController.filterJobPost');
         Route::get('/seeker-jobPosts-filter',[FilterController::class,'filterJobPostsForSeeker'])->name('api.filterController.filterJobPostsForSeeker');
         Route::get('/seeker-freelancePosts-filter',[FilterController::class,'filterFreelancePostForSeeker'])->name('api.filterController.filterFreelancePostForSeeker');
+
+
 
     });
     Route::middleware([CompanyMiddleware::class])->group(function (){
