@@ -11,6 +11,7 @@ use App\Models\Experience;
 use App\Models\FreelancePost;
 use App\Models\Seeker;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -288,19 +289,22 @@ class ContractController extends Controller
 
     public function delivered(Request $request, Contract $contract)
     {
-        $request->validate([
-            'delivered_date' => 'required|date',
-            'status' => 'boolean',
-        ]);
-
         try {
-            $data = $request->only('delivered_date');
-            $data['status'] = $request->boolean('status', true);
+            $deliveredDate = Carbon::parse($request->delivered_date);
+            $endDate = Carbon::parse($contract->end_date);
 
-            $contract->update($data);
+            $deliveredOnTime = $deliveredDate->lessThanOrEqualTo($endDate);
+
+            $contract->update([
+                'delivered_date' => $request->delivered_date,
+                'status' => $request->input('status', true),
+                'delivered_on_time' => $deliveredOnTime,
+            ]);
+
+            $this->updateSeekerOnTimePercentage($contract->freelancer_id);
 
             return response()->json([
-                'data' => $contract,
+                'data' => ContractResource::collection(collect([$contract])),
                 'message' => 'Contract updated successfully',
                 'status' => 200,
             ], 200);
@@ -314,6 +318,23 @@ class ContractController extends Controller
             ], 500);
         }
     }
+
+    protected function updateSeekerOnTimePercentage($seekerId)
+    {
+        $seeker = Seeker::findOrFail($seekerId);
+
+        $totalContracts = Contract::where('freelancer_id', $seekerId)->count();
+        $onTimeContracts = Contract::where('freelancer_id', $seekerId)->where('delivered_on_time', true)->count();
+
+        $onTimePercentage = $totalContracts > 0 ? ($onTimeContracts / $totalContracts) * 100 : 0;
+
+        // Update the on_time_percentage in the seekers table
+        $seeker->update([
+            'on_time_percentage' => $onTimePercentage,
+        ]);
+    }
+
+
 
 
     /**

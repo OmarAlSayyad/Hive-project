@@ -11,7 +11,7 @@ class Contract extends Model
 
 
     protected $fillable = [
-        'company_hire_id','seeker_hire_id','freelancer_id','freelance_id','terms', 'description', 'start_date', 'end_date','delivered_date', 'status'
+        'company_hire_id','seeker_hire_id','freelancer_id','freelance_id','terms', 'description', 'start_date', 'end_date','delivered_date', 'status','delivered_on_time'
     ];
 
     public function company()

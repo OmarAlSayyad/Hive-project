@@ -24,8 +24,8 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date');
 
+            $table->boolean('delivered_on_time')->nullable();
             $table->date('delivered_date')->nullable();
-
             $table->boolean('status')->default(false);
 
             $table->timestamps();
