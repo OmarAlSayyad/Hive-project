@@ -10,21 +10,16 @@ use App\Http\Requests\UpdateCompanyRequest;
 use App\Models\FreelancePost;
 use App\Models\JobPost;
 use App\Models\Locations;
-use App\Models\Seeker;
 use App\Models\User;
 use App\Models\Wallet;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
 
 class CompanyController extends Controller
 {
@@ -87,10 +82,19 @@ class CompanyController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function allCompany()
     {
         $companies = Company::with('user','location','communication')->get();
          return CompanyResource::collection($companies);
+    }
+    public function index()
+    {
+        // Retrieve only companies that are approved
+        $approvedCompanies = Company::with('user', 'location', 'communication')
+            ->where('approved', true)
+            ->get();
+
+        return CompanyResource::collection($approvedCompanies);
     }
 
 

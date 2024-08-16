@@ -53,6 +53,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // company
     Route::get('/companies',[CompanyController::class,'index'])->name('api.companies.index');
+    Route::get('/all-company',[CompanyController::class,'allCompany'])->name('api.companies.allCompany');
     Route::get('/companies/{company}', [CompanyController::class, 'show'])->name('api.companies.show');
     Route::get('/company-job-post/{company}', [JobPostController::class, 'companyJobPost'])->name('api.job_post.companyJobPost');
 
