@@ -26,6 +26,7 @@ class InterviewResource extends JsonResource
         'notes'=>$this->notes,
         'status'=>$this->status,
         'result'=>$this->result,
+        'interview_link'=>$this->interview_link,
 
     ];
 

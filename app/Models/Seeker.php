@@ -34,6 +34,7 @@ class Seeker extends Model
         return $this->hasMany(FreelancePost::class);
     }
 
+
     public function skill()
     {
         return $this->belongsToMany(Skill::class, 'seeker_skills');
@@ -47,7 +48,10 @@ class Seeker extends Model
     {
         return $this->hasMany(Education::class);
     }
-
+    public function experience()
+    {
+        return $this->hasMany(Experience::class);
+    }
     public function interview()
     {
         return $this->hasMany(Interview::class);
@@ -63,10 +67,7 @@ class Seeker extends Model
         return $this->hasMany(Contract::class);
     }
 
-    public function experience()
-    {
-        return $this->hasMany(Experience::class);
-    }
+
     public function wallet()
     {
         return $this->hasMany(Wallet::class);

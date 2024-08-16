@@ -21,6 +21,8 @@ return new class extends Migration
             $table->time('ended_at');
             $table->string('address');
             $table->text('notes');
+            $table->string('interview_link')->nullable();
+
             $table->boolean('status')->default(false);
             $table->enum('result',['Accepted','Refused','Pending'])->default('Pending');
             $table->timestamps();

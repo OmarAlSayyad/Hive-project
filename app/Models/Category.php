@@ -18,4 +18,20 @@ class Category extends Model
     {
         return $this->hasMany(Skill::class);
     }
+
+    public function jobPost()
+    {
+        return $this->belongsTo(JobPost::class);
+    }
+    public function seeker()
+    {
+        return $this->belongsTo(Seeker::class);
+    }
+
+
+    public function freelancePost()
+    {
+        return $this->belongsTo(FreelancePost::class);
+    }
+
 }

@@ -10,6 +10,7 @@ use App\Http\Controllers\EducationController;
 use App\Http\Controllers\ExperienceController;
 use App\Http\Controllers\FavoriteFreelanceController;
 use App\Http\Controllers\FavoriteJobController;
+use App\Http\Controllers\FilterController;
 use App\Http\Controllers\FreelancePostController;
 use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\JobPostController;
@@ -230,6 +231,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/seeker-rating',[SeekerRatingController::class,'store'])->name('api.seekerRating.store');
         Route::post('/seeker-rating/{seekerRating}',[SeekerRatingController::class,'update'])->name('api.seekerRating.update');
         Route::delete('/seeker-rating/{seekerRating}',[SeekerRatingController::class,'destroy'])->name('api.seekerRating.destroy');
+
+        //filtering
+        Route::post('/filter-companies',[FilterController::class,'filterCompany'])->name('api.filterController.filterCompany');
+        Route::post('/filter-jobPosts',[FilterController::class,'filterJobPosts'])->name('api.filterController.filterJobPost');
+        Route::get('/seeker-jobPosts-filter',[FilterController::class,'filterJobPostsForSeeker'])->name('api.filterController.filterJobPostsForSeeker');
+        Route::get('/seeker-freelancePosts-filter',[FilterController::class,'filterFreelancePostForSeeker'])->name('api.filterController.filterFreelancePostForSeeker');
+        Route::get('/company-freelancePosts-filter',[FilterController::class,'filterFreelancePostForCompany'])->name('api.filterController.filterFreelancePostForCompany');
 
     });
     Route::middleware([CompanyMiddleware::class])->group(function (){

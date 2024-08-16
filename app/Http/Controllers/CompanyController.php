@@ -43,6 +43,9 @@ class CompanyController extends Controller
 //    }
 
 
+
+
+
     public function searchByCompany($companyName)
     {
         $user = Auth::user();
@@ -88,13 +91,6 @@ class CompanyController extends Controller
     {
         $companies = Company::with('user','location','communication')->get();
          return CompanyResource::collection($companies);
-    }
-
-
-    public function search(Request $request)
-    {
-        $company = Company::latest()->filter()-get();
-        return CompanyResource::collection($company);
     }
 
 
