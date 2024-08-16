@@ -14,5 +14,9 @@ class ApplicantsJobPost extends Model
     public function job_post(){
         return $this->belongsTo(JobPost::class);
     }
+    public function seeker(){
+        return $this->belongsTo(Seeker::class);
+    }
+
 
 }

@@ -74,7 +74,7 @@ class ApplicantsJobPostController extends Controller
         try {
 
             if ($jobPost){
-                $applicants=ApplicantsJobPost::with(['job_post'])
+                $applicants=ApplicantsJobPost::with(['job_post','seeker'])
                     ->where('job_post_id', $jobPost->id)
                     ->get();
             }
@@ -151,7 +151,7 @@ class ApplicantsJobPostController extends Controller
                 'status' => 500,
             ], 500);
         }
-            $applicant->load(['job_post']);
+            $applicant->load(['job_post','seeker']);
         return response()->json([
             'data' =>  ApplicantjobPostResource::collection(collect([$applicant])),
             'message' => ' applicant on job post added  successfully',
@@ -165,7 +165,7 @@ class ApplicantsJobPostController extends Controller
     public function show(ApplicantsJobPost $applicantsJobPost)
     {
         $applicantsJobPost = ApplicantsJobPost::findOrFail($applicantsJobPost->id);
-        $applicantsJobPost->load(['job_post']);
+        $applicantsJobPost->load(['job_post','seeker']);
         return ApplicantjobPostResource::collection([$applicantsJobPost]);
 
     }
@@ -206,7 +206,7 @@ class ApplicantsJobPostController extends Controller
                 'status' => 500,
             ], 500);
         }
-        $applicantsJobPost->load(['job_post']);
+        $applicantsJobPost->load(['job_post','seeker']);
         return response()->json([
             'data' =>  ApplicantjobPostResource::collection(collect([$applicantsJobPost])),
             'message' => ' applicant on freelance post added  successfully',
