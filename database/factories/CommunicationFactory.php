@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Communication;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -14,10 +15,17 @@ class CommunicationFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public function definition(): array
+    protected $model = Communication::class;
+
+    public function definition()
     {
         return [
-            //
+            'mobile_phone' => $this->faker->phoneNumber(),
+            'line_phone' => $this->faker->phoneNumber(),
+            'website' => $this->faker->url(),
+            'linkedin_account' => $this->faker->url(),
+            'github_account' => $this->faker->url(),
+            'facebook_account' => $this->faker->url(),
         ];
     }
 }

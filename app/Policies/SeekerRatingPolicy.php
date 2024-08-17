@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\Contract;
+use App\Models\SeekerRating;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class ContractPolicy
+class SeekerRatingPolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -19,7 +19,7 @@ class ContractPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Contract $contract): bool
+    public function view(User $user, SeekerRating $seekerRating): bool
     {
         //
     }
@@ -35,19 +35,15 @@ class ContractPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Contract $contract): Response
+    public function update(User $user, SeekerRating $seekerRating): bool
     {
-
-        return $user->id === $company->user_id
-            ? Response::allow()
-            : Response::deny('You do not own this contract  .');
-
+        //
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Contract $contract): bool
+    public function delete(User $user, SeekerRating $seekerRating): bool
     {
         //
     }
@@ -55,7 +51,7 @@ class ContractPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Contract $contract): bool
+    public function restore(User $user, SeekerRating $seekerRating): bool
     {
         //
     }
@@ -63,7 +59,7 @@ class ContractPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Contract $contract): bool
+    public function forceDelete(User $user, SeekerRating $seekerRating): bool
     {
         //
     }
