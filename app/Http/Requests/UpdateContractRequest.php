@@ -29,6 +29,7 @@ class UpdateContractRequest extends FormRequest
             'terms' => 'required|string',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after:start_date',
+            'delivered_date'=>'required|date',
         ];
     }
     protected function failedValidation(Validator $validator)

@@ -300,11 +300,18 @@ class ContractController extends Controller
                 'delivered_on_time' => $deliveredOnTime,
             ]);
 
+            $message="This work experience is not added ";
+            if($contract->delivered_date!=null){
+                $message= $this->automaticExperience($contract);
+
+            }
+
             $this->updateSeekerOnTimePercentage($contract->freelancer_id);
 
             return response()->json([
                 'data' => ContractResource::collection(collect([$contract])),
                 'message' => 'Contract updated successfully',
+                'Experience status'=>$message,
                 'status' => 200,
             ], 200);
         } catch (Exception $e) {
@@ -378,18 +385,14 @@ class ContractController extends Controller
                 'terms' => $request->terms,
                 'start_date' => $request->start_date,
                 'end_date' => $request->end_date,
+               // 'delivered_date'=>$request->delivered_date,
                 //'status' => $request->status,//->input('status', $contract->status),
             ]);
-            $message="This work experience is not added ";
-            if($contract->status==='1'){
-               $message= $this->automaticExperience($contract);
 
-            }
 
             return response()->json([
                 'data' => new ContractResource($contract),
                 'message' => 'Contract updated successfully ',
-                'Experience status'=>$message,
                 'status' => 200,
             ], 200);
         } catch (Exception $e) {
