@@ -225,6 +225,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 
         // Company Rating
+
         Route::post('/company-rating',[CompanyRatingController::class,'store'])->name('api.companyRating.store');
         Route::post('/company-rating/{companyRating}',[CompanyRatingController::class,'update'])->name('api.companyRating.update');
         Route::delete('/company-rating/{companyRating}',[CompanyRatingController::class,'destroy'])->name('api.companyRating.destroy');
