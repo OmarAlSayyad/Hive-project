@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Builder;
 use Symfony\Component\Console\Output\NullOutput;
 
 class Company extends Model
@@ -19,6 +19,35 @@ class Company extends Model
     ];
 
 
+    public function scopeFilter(Builder $query, array $filters)
+    {
+//        $query->when($filters['location']??false,fn($query,$city)=>
+//        $query->whereHas('location',fn($query)=>
+//        $query->where('city',$city)
+//        )
+//        );
+
+        if (isset($filters['city'])) {
+            $query->whereHas('location', function ($q) use ($filters) {
+                $q->where('city', $filters['city']);
+            });
+        }
+
+        if (isset($filters['country'])) {
+            $query->whereHas('location', function ($q) use ($filters) {
+                $q->where('country', $filters['country']);
+            });
+        }
+
+        if (isset($filters['industry'])) {
+            $query->where('industry', $filters['industry']);
+        }
+
+        return $query;
+    }
+
+
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -26,7 +55,7 @@ class Company extends Model
 
     public function location()
     {
-        return $this->belongsTo(Locations::class);
+        return $this->belongsTo(Locations::class,'location_id');
     }
 
     public function communication()

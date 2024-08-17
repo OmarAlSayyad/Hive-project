@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('job_description')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
+
             $table->timestamps();
 
             $table->index('seeker_id');

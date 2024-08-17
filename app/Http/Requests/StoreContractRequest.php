@@ -27,8 +27,8 @@ class StoreContractRequest extends FormRequest
             'freelancer_id' => 'required|exists:seekers,id',
             'freelance_id' => 'required|exists:freelance_posts,id',
             'terms' => 'required|string',
-            'start_date' => 'required|date|date_format:Y-m-d H:i:s',
-            'end_date' => 'required|date|date_format:Y-m-d H:i:s|after:start_date',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after:start_date',
         ];
     }
     protected function failedValidation(Validator $validator)

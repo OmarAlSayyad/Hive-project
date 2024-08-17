@@ -20,9 +20,9 @@ return new class extends Migration
              $table->date('start_date')->nullable();
              $table->date('graduation_date')->nullable();
             $table->decimal('graduation_degree')->nullable();
-            $table->string('specialization')->nullable();
-            $table->enum('status', ['enrolled', 'graduated', 'dropped_out'])->default('enrolled');
-            $table->enum('study_mode', ['full_time', 'part_time', 'online'])->default('full_time');
+           // $table->string('specialization')->nullable();
+            //$table->enum('status', ['enrolled', 'graduated', 'dropped_out'])->default('enrolled');
+            //$table->enum('study_mode', ['full_time', 'part_time', 'online'])->default('full_time');
             $table->enum('scientific_level',['High_School','Diploma','College_degree','Master','Ph.D','Training_course'])->default('High_School');
 
             $table->timestamps();

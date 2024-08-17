@@ -11,7 +11,9 @@ use App\Models\Experience;
 use App\Models\FreelancePost;
 use App\Models\Seeker;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -285,6 +287,83 @@ class ContractController extends Controller
 
     }
 
+    public function delivered(Request $request, Contract $contract)
+    {
+        try {
+            $deliveredDate = Carbon::parse($request->delivered_date);
+            $endDate = Carbon::parse($contract->end_date);
+
+            $deliveredOnTime = $deliveredDate->lessThanOrEqualTo($endDate);
+
+            $contract->update([
+                'delivered_date' => $request->delivered_date,
+                'delivered_on_time' => $deliveredOnTime,
+            ]);
+
+            $this->updateSeekerOnTimePercentage($contract->freelancer_id);
+
+            return response()->json([
+                'data' => ContractResource::collection(collect([$contract])),
+                'message' => 'Contract updated successfully',
+                'status' => 200,
+            ], 200);
+        } catch (Exception $e) {
+            Log::error('Error updating Contract: ' . $e->getMessage(), ['exception' => $e]);
+
+            return response()->json([
+                'data' => '',
+                'message' => 'An error occurred while updating the Contract',
+                'status' => 500,
+            ], 500);
+        }
+    }
+
+    protected function updateSeekerOnTimePercentage($seekerId)
+    {
+        $seeker = Seeker::findOrFail($seekerId);
+
+        $totalContracts = Contract::where('freelancer_id', $seekerId)->count();
+        $onTimeContracts = Contract::where('freelancer_id', $seekerId)->where('delivered_on_time', true)->count();
+
+        $onTimePercentage = $totalContracts > 0 ? ($onTimeContracts / $totalContracts) * 100 : 0;
+
+        // Update the on_time_percentage in the seekers table
+        $seeker->update([
+            'on_time_percentage' => $onTimePercentage,
+        ]);
+    }
+
+
+    public function acceptContract(Request $request, Contract $contract)
+    {
+        try {
+            // Validate that the status is a boolean value
+            $request->validate([
+                'status' => 'required|boolean',
+            ]);
+
+            // Update only the status field of the contract
+            $contract->update([
+                'status' => $request->input('status'),
+            ]);
+
+            return response()->json([
+                'data' => new ContractResource($contract),
+                'message' => 'Contract status updated successfully',
+                'status' => 200,
+            ], 200);
+        } catch (Exception $e) {
+            Log::error('Error updating contract status: ' . $e->getMessage(), ['exception' => $e]);
+
+            return response()->json([
+                'data' => '',
+                'message' => 'An error occurred while updating the contract status',
+                'status' => 500,
+            ], 500);
+        }
+    }
+
+
     /**
      * Update the specified resource in storage.
      */
@@ -299,7 +378,7 @@ class ContractController extends Controller
                 'terms' => $request->terms,
                 'start_date' => $request->start_date,
                 'end_date' => $request->end_date,
-                'status' => $request->status,//->input('status', $contract->status),
+                //'status' => $request->status,//->input('status', $contract->status),
             ]);
             $message="This work experience is not added ";
             if($contract->status==='1'){
@@ -321,7 +400,9 @@ class ContractController extends Controller
                 'message' => 'An error occurred while updating the Contract',
                 'status' => 500,
             ], 500);
-        }    }
+        }
+
+    }
 
     /**
      * Remove the specified resource from storage.

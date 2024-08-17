@@ -10,6 +10,7 @@ use App\Http\Controllers\EducationController;
 use App\Http\Controllers\ExperienceController;
 use App\Http\Controllers\FavoriteFreelanceController;
 use App\Http\Controllers\FavoriteJobController;
+use App\Http\Controllers\FilterController;
 use App\Http\Controllers\FreelancePostController;
 use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\JobPostController;
@@ -52,6 +53,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // company
     Route::get('/companies',[CompanyController::class,'index'])->name('api.companies.index');
+    Route::get('/all-company',[CompanyController::class,'allCompany'])->name('api.companies.allCompany');
     Route::get('/companies/{company}', [CompanyController::class, 'show'])->name('api.companies.show');
     Route::get('/company-job-post/{company}', [JobPostController::class, 'companyJobPost'])->name('api.job_post.companyJobPost');
 
@@ -119,6 +121,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/contract',[ContractController::class,'store'])->name('api.contract.store');
     Route::post('/contract/{contract}',[ContractController::class,'update'])->name('api.contract.update');
     Route::delete('/contract/{contract}',[ContractController::class,'destroy'])->name('api.contract.destroy');
+    Route::post('/delivered/{contract}',[ContractController::class,'delivered'])->name('api.contract.delivered');
+    Route::post('/accept-contract/{contract}',[ContractController::class,'acceptContract'])->name('api.contract.acceptContract');
 
 
 
@@ -231,8 +235,21 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/seeker-rating/{seekerRating}',[SeekerRatingController::class,'update'])->name('api.seekerRating.update');
         Route::delete('/seeker-rating/{seekerRating}',[SeekerRatingController::class,'destroy'])->name('api.seekerRating.destroy');
 
+        //filtering
+        Route::post('/filter-companies',[FilterController::class,'filterCompany'])->name('api.filterController.filterCompany');
+        Route::post('/filter-jobPosts',[FilterController::class,'filterJobPosts'])->name('api.filterController.filterJobPost');
+        Route::get('/seeker-jobPosts-filter',[FilterController::class,'filterJobPostsForSeeker'])->name('api.filterController.filterJobPostsForSeeker');
+        Route::get('/seeker-freelancePosts-filter',[FilterController::class,'filterFreelancePostForSeeker'])->name('api.filterController.filterFreelancePostForSeeker');
+
+
+
     });
     Route::middleware([CompanyMiddleware::class])->group(function (){
+
+        // filter freelance post
+        Route::get('/company-freelancePosts-filter',[FilterController::class,'filterFreelancePostForCompany'])->name('api.filterController.filterFreelancePostForCompany');
+
+
 
         Route::get('/my-profile-company',[CompanyController::class,'getMyCompany'])->name('api.companies.getMyCompany');
         Route::post('/companies',[CompanyController::class,'store'])->name('api.companies.store');

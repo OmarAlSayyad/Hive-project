@@ -130,35 +130,44 @@ class InterviewController extends Controller
     {
         try {
             $user = Auth::user();
-            $company=Company::where('user_id', $user->id)->first();
-            if($company)
-            {
+            $company = Company::where('user_id', $user->id)->first();
+
+            if ($company) {
                 $interview = Interview::create([
                     'company_id' => $company->id,
-                    'seeker_id'=>$request->seeker_id,
-
-                    'scheduled_at'=>$request->scheduled_at,
-                    'started_at'=>$request->started_at,
-                    'ended_at'=>$request->ended_at,
-                    'address'=>$request->address,
-                    'notes'=>$request->notes,
+                    'seeker_id' => $request->seeker_id,
+                    'scheduled_at' => $request->scheduled_at,
+                    'started_at' => $request->started_at,
+                    'ended_at' => $request->ended_at,
+                    'address' => $request->address,
+                    'notes' => $request->notes,
+                    'interview_link' => $request->input('interview_link',null),
                 ]);
+
+                return response()->json([
+                    'data' => InterviewResource::collection(collect([$interview])),
+                    'message' => 'Interview created successfully',
+                    'status' => 200,
+                ], 200);
+
+            } else {
+                return response()->json([
+                    'data' => '',
+                    'message' => 'Company not found for the user',
+                    'status' => 404,
+                ], 404);
             }
-             } catch (Exception $e) {
-            Log::error('Error creating interview :' . $e->getMessage());
+        } catch (Exception $e) {
+            Log::error('Error creating interview: ' . $e->getMessage());
+
             return response()->json([
                 'data' => '',
-                'message' => 'An error occurred while creating the interview ',
+                'message' => 'An error occurred while creating the interview',
                 'status' => 500,
             ], 500);
-        } finally {
-            return response()->json([
-                'data' =>  InterviewResource::collection(collect([$interview])),
-                'message' => ' interview created successfully',
-                'status' => 200,
-            ],200);
         }
     }
+
 
     /**
      * Display the specified resource.
@@ -187,7 +196,7 @@ class InterviewController extends Controller
        // $this->authorize('update', $interview);
 
         $interview->update($request->only(['seeker_id','scheduled_at',
-            'started_at','ended_at','address', 'notes']));
+            'started_at','ended_at','address', 'notes','interview_link']));
 
 
         } catch (AuthorizationException $e) {

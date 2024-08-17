@@ -15,6 +15,6 @@ class Experience extends Model
 
     public function seeker()
     {
-        return $this->belongsTo(Seeker::class);
+        return $this->belongsTo(Seeker::class,'seeker_id');
     }
 }

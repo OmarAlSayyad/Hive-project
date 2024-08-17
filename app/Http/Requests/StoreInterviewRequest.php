@@ -30,6 +30,7 @@ class StoreInterviewRequest extends FormRequest
                 'ended_at'=>'required|after:started_at',
                 'address'=>'required|string',
                 'notes'=>'required|string',
+                'interview_link'=>'nullable|url',
         ];
     }
     protected function failedValidation(Validator $validator)
