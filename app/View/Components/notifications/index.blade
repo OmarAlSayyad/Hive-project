@@ -1,0 +1,14 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
+    <h1>Notifications</h1>
+    <ul>
+        @forelse($notifications as $notification)
+            <li>{{ $notification->data['message'] }} - <small>{{ $notification->created_at->diffForHumans() }}</small></li>
+        @empty
+            <li>No notifications found.</li>
+        @endforelse
+    </ul>
+</div>
+@endsection

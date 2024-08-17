@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Notification;
 use App\Http\Requests\StoreNotificationRequest;
 use App\Http\Requests\UpdateNotificationRequest;
+use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
@@ -13,7 +14,13 @@ class NotificationController extends Controller
      */
     public function index()
     {
-        //
+    
+        $notifications = auth()->user()->unreadNotifications->where('type', 'App\Notifications\NewCompanyProfileRequest');
+        $notifications->markAsRead();
+
+
+        return view('notifications.index', compact('notifications'));
+    
     }
 
     /**

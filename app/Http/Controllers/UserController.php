@@ -165,4 +165,38 @@ class UserController extends Controller
     {
         //
     }
+    public function cat (Request $request)
+    {
+        // Get the role from the request or default to 'admin'
+        $role = $request->input('role', 'admin');
+
+        // Fetch users based on the selected role
+        $users = User::where('role', $role)->with('permissions')->get(); 
+
+        return view('users.index', compact('users', 'role'));
+    }
+    public function getUserPermissions($id)
+    {
+        $user = User::with('permissions')->findOrFail($id);
+    
+        return response()->json($user);
+    }
+    
+    public function toggleBan(User $user)
+    {
+        $user->banned = !$user->banned;
+        $user->save();
+        
+        return redirect()->back()->with('success', 'User status updated successfully.');
+    }
+    
+    public function toggleApproval(User $user)
+    {
+        $user->approved = !$user->approved;
+        $user->save();
+    
+        return redirect()->back()->with('success', 'User approval status updated successfully.');
+    }
 }
+
+
