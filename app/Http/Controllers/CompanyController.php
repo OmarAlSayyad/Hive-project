@@ -42,10 +42,32 @@ class CompanyController extends Controller
     public function index()
     {
         $companies = Company::with('user','location', 'communication')->get();
-        return response($companies);
-        // return CompanyResource::collection($companies);
+         return CompanyResource::collection($companies);
     }
+    public function getMyCompany()
+    {
+        try {
+            $user = Auth::user();
+            $company = Company::where('user_id', $user->id)->first();
 
+            if (!$company) {
+                return response()->json([
+                    'message' => 'Company not found for the current user',
+                    'status' => 404
+                ], 404);
+            }
+            $company->load(['user', 'location', 'communication']);
+            return CompanyResource::collection(collect([$company]));
+        } catch (\Exception $e) {
+            // Log any errors that occur
+            Log::error('Error retrieving company: ' . $e->getMessage());
+
+            return response()->json([
+                'message' => 'Failed to retrieve company',
+                'status' => 500
+            ], 500);
+        }
+    }
     /**
      * Show the form for creating a new resource.
      */
@@ -67,7 +89,7 @@ class CompanyController extends Controller
             {
                 return response()->json([
                     'data' => '',
-                    'message' => 'User already exist',
+                    'message' => 'Company already exist',
                     'status' => 500,
                 ],500);
             }
@@ -144,8 +166,9 @@ class CompanyController extends Controller
                     'status' => 500
                 ],500);
             }
+            $company->load(['user', 'location', 'communication']);
             return response()->json([
-                'data' => new CompanyResource($company->load(['user', 'location', 'communication'])),
+                'data' => CompanyResource::collection(collect([$company])),
                 'message' => 'Company registered successfully',
                 'status' => 201
             ]);
@@ -170,7 +193,8 @@ class CompanyController extends Controller
      */
     public function show(Company $company)
     {
-        return new CompanyResource($company->load(['user', 'location', 'communication']));
+        $company->load(['user', 'location', 'communication']);
+        return CompanyResource::collection(collect([$company]));
     }
 
     /**
@@ -186,10 +210,11 @@ class CompanyController extends Controller
      */
 
 
-    public function update(UpdateCompanyRequest $request, Company $company)
+    public function update(UpdateCompanyRequest $request)
     {
 
-        $company = Company::findOrFail($company->id);
+        $user = Auth::user();
+        $company= Company::where('user_id', $user->id)->first();
 
         try {
             $this->authorize('update', $company);
@@ -217,15 +242,17 @@ class CompanyController extends Controller
                 $company->save();
             }
 
+            $company->load(['user', 'location', 'communication']);
             return response()->json([
-                'data' => new CompanyResource($company->load(['user', 'location', 'communication'])),
+                'data' =>  CompanyResource::collection(collect([$company])),
                 'message' => 'Company updated successfully',
                 'status' => 200
             ], 200);
         } catch (AuthorizationException $e) {
             return response()->json([
-                'success' => false,
+                'data' =>'',
                 'message' => $e->getMessage(),
+                'status' => 403
             ], 403);
         }
     }
@@ -235,6 +262,40 @@ class CompanyController extends Controller
      */
     public function destroy(Company $company)
     {
-        //
+        try {
+
+            //$this->authorize('delete', $company);
+
+            if ($company->picture) {
+                Storage::disk('public')->delete($company->picture);
+            }
+
+            $company->wallet()->delete();
+
+            $company->location()->delete();
+
+            $company->communication()->delete();
+
+            $company->delete();
+
+            return response()->json([
+                'data' =>'',
+                'message' => 'Company deleted successfully',
+                'status' => 200
+            ], 200);
+        } catch (AuthorizationException $e) {
+            return response()->json([
+                'data' =>'',
+                'message' => $e->getMessage(),
+                'status' => 403
+            ], 403);
+        } catch (\Exception $e) {
+            return response()->json([
+                'data' =>'',
+                'message' => 'Failed to delete company. ' . $e->getMessage(),
+                'status' => 500
+            ], 500);
+        }
+
     }
 }

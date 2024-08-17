@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Console\Output\NullOutput;
 
 class Company extends Model
@@ -16,6 +17,8 @@ class Company extends Model
     protected $fillable = [
         'user_id', 'location_id', 'communication_id','rating','picture', 'industry', 'description','approved'
     ];
+
+
 
     public function user()
     {
