@@ -22,4 +22,12 @@ class Wallet extends Model
     {
         return $this->belongsTo(Seeker::class);
     }
+    public function fillWallet($amount)
+    {
+        if ($amount <= 0) {
+            throw new \InvalidArgumentException('Amount must be positive.');
+        }
+        $this->balance += $amount;
+        $this->save();
+    }
 }

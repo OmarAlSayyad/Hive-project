@@ -117,5 +117,5 @@ class CategorySeeder extends Seeder
                 ]);
             }
         }
-    }
-}
+     }
+ }
