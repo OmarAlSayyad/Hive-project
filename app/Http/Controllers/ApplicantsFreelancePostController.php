@@ -72,33 +72,45 @@ class ApplicantsFreelancePostController extends Controller
     public function getApplicantsByFreelanceId(FreelancePost $freelancePost)
     {
         try {
-
-            if ($freelancePost){
-                $applicants=ApplicantsFreelancePost::with(['freelance_post','seeker'])
+            if ($freelancePost) {
+                // Fetch applicants and order by Number_of_hours and price in ascending order
+                $applicants = ApplicantsFreelancePost::with(['freelance_post', 'seeker'])
                     ->where('freelance_post_id', $freelancePost->id)
+                    ->orderBy('Number_of_hours', 'asc')
+                    ->orderBy('price', 'asc')
                     ->get();
-           //     $applicants->seeker=Seeker::where('id',$applicants->seeker_id)->get();
             }
+           // $freelancePost1=FreelancePost::where('id',$freelancePost->id)->first();
+
+
+           // $this->authorize('view',$freelancePost1);
 
             if ($applicants->isEmpty()) {
                 return response()->json([
                     'data' => [],
-                    'message' => 'No applicants was found for this freelance post',
+                    'message' => 'No applicants were found for this freelance post',
                     'status' => 404,
                 ], 404);
             }
 
             return response()->json([
-                'data' =>  ApplicantFreelancePostResource::collection($applicants),
-                'message' => 'applicants on this freelance retrieved successfully',
+                'data' => ApplicantFreelancePostResource::collection($applicants),
+                'message' => 'Applicants for this freelance post retrieved successfully',
                 'status' => 200,
             ], 200);
 
-        } catch (Exception $e) {
-            Log::error('Error retrieving  applicants on this freelance: ' . $e->getMessage());
+        }
+        catch (AuthorizationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 403);
+        }
+        catch (Exception $e) {
+            Log::error('Error retrieving applicants for this freelance post: ' . $e->getMessage());
             return response()->json([
                 'data' => [],
-                'message' => 'An error occurred while retrieving applicants on this freelance',
+                'message' => 'An error occurred while retrieving applicants for this freelance post',
                 'status' => 500,
             ], 500);
         }
@@ -127,6 +139,8 @@ class ApplicantsFreelancePostController extends Controller
                 ->where('freelance_post_id', $request->freelance_post_id)
                 ->first();
 
+            $freelancePost=FreelancePost::where('id',$request->freelance_post_id)->first();
+
             if ($existingApplication) {
                 return response()->json([
                     'data' => [],
@@ -135,14 +149,24 @@ class ApplicantsFreelancePostController extends Controller
                 ], 409);
             }
 
-
+            if($request->price > $freelancePost->max_budget ||$request->price < $freelancePost->min_budget )
+            {
+                return response()->json([
+                    'data' => [],
+                    'message' => 'You must add the price within the range',
+                    'status' => 409,
+                ], 409);
+            }
             $applicant= ApplicantsFreelancePost::create([
                 'seeker_id'=>$seeker->id,
                 'freelance_post_id'=>$request->freelance_post_id,
-                'status'=>'Pending'
+                'status'=>'Pending',
+                'price'=>$request->price,
+                'Number_of_hours'=>$request->Number_of_hours,
             ]);
 
-        } catch (Exception $e) {
+        }
+        catch (Exception $e) {
             Log::error('Error while applicant on freelance post :' . $e->getMessage());
             return response()->json([
                 'data' => '',

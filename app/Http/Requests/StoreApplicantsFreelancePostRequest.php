@@ -24,7 +24,9 @@ class StoreApplicantsFreelancePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'freelance_post_id'=>'required|exists:freelance_posts,id'
+            'freelance_post_id'=>'required|exists:freelance_posts,id',
+            'Number_of_hours'=>'required',
+            'price'=>'required',
 
         ];
     }
