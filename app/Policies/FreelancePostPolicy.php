@@ -24,6 +24,20 @@ class FreelancePostPolicy
      */
     public function view(User $user, FreelancePost $freelancePost)
     {
+        $seeker = $user->seeker;
+        $company = $user->company;
+
+
+        if (
+            ($seeker && $seeker->id === $freelancePost->seeker_id) ||
+            ($company && $company->id === $freelancePost->company_id)
+        ) {
+            return true;
+        }
+
+        return $this->deny('You do not have permission to show this applicants.');
+
+
 
     }
 

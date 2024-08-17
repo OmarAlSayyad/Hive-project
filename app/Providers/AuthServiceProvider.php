@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
+use App\Models\ApplicantsFreelancePost;
 use App\Models\Company;
 use App\Models\FreelancePost;
 use App\Models\JobPost;
 use App\Models\Seeker;
+use App\Policies\ApplicantsFreelancePostPolicy;
 use App\Policies\CompanyPolicy;
 use App\Policies\FreelancePostPolicy;
 use App\Policies\JobPostPolicy;
@@ -20,7 +22,8 @@ class AuthServiceProvider extends ServiceProvider
         Seeker::class => SeekerPolicy::class,
         Company::class => CompanyPolicy::class,
         FreelancePost::class => FreelancePostPolicy::class,
-        JobPost::class => JobPostPolicy::class
+        JobPost::class => JobPostPolicy::class,
+        ApplicantsFreelancePost::class=>ApplicantsFreelancePostPolicy::class,
     ];
 
     /**

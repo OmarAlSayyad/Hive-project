@@ -385,7 +385,6 @@ class ContractController extends Controller
                 'terms' => $request->terms,
                 'start_date' => $request->start_date,
                 'end_date' => $request->end_date,
-               // 'delivered_date'=>$request->delivered_date,
                 //'status' => $request->status,//->input('status', $contract->status),
             ]);
 

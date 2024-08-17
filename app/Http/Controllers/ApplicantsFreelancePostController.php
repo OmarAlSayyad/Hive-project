@@ -71,19 +71,23 @@ class ApplicantsFreelancePostController extends Controller
 
     public function getApplicantsByFreelanceId(FreelancePost $freelancePost)
     {
+      //
         try {
+
+            $freelancePost=FreelancePost::where('id',$freelancePost->id)->first();
+            $this->authorize('view',$freelancePost);
+
+
             if ($freelancePost) {
-                // Fetch applicants and order by Number_of_hours and price in ascending order
+
                 $applicants = ApplicantsFreelancePost::with(['freelance_post', 'seeker'])
                     ->where('freelance_post_id', $freelancePost->id)
                     ->orderBy('Number_of_hours', 'asc')
                     ->orderBy('price', 'asc')
                     ->get();
             }
-           // $freelancePost1=FreelancePost::where('id',$freelancePost->id)->first();
 
 
-           // $this->authorize('view',$freelancePost1);
 
             if ($applicants->isEmpty()) {
                 return response()->json([
